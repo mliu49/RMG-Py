@@ -126,9 +126,14 @@ def analyze_molecule(mol):
 
     return features
 
-def generate_resonance_structures(mol, clarStructures=True, keepIsomorphic=False):
+def generate_resonance_structures(mol, clarStructures=True, keepIsomorphic=False, keepInitial=False):
     """
     Generate and return all of the resonance structures for the input molecule.
+
+    Args:
+        keepIsomorphic: use isIdentical comparison to remove duplicate structures instead of isIsomorphic
+        keepInitial:    force the algorithm to keep the input molecule first in the list, otherwise the algorithm
+                        may remove or reorder the input molecule for aromatic species
 
     Most of the complexity of this method goes into handling aromatic species, particularly to generate an accurate
     set of resonance structures that is consistent regardless of the input structure. The following considerations
@@ -199,19 +204,22 @@ def generate_resonance_structures(mol, clarStructures=True, keepIsomorphic=False
             # In this case, we already have the aromatic form, so we're done
             pass
 
-        # Check for isomorphism against the original molecule
-        for i, newMol in enumerate(newMolList):
-            if not keepIsomorphic and mol.isIsomorphic(newMol):
-                # There will be at most one isomorphic molecule, since the new molecules have
-                # already been checked against each other, so we can break after removing it
-                del newMolList[i]
-                break
-            elif keepIsomorphic and mol.isIdentical(newMol):
-                del newMolList[i]
-                break
-        # Add the newly generated structures to the original list
-        # This is not optimal, but is a temporary measure to ensure compatability until other issues are fixed
-        molList.extend(newMolList)
+        if keepInitial:
+            # Check for isomorphism against the original molecule
+            for i, newMol in enumerate(newMolList):
+                if not keepIsomorphic and mol.isIsomorphic(newMol):
+                    # There will be at most one isomorphic molecule, since the new molecules have
+                    # already been checked against each other, so we can break after removing it
+                    del newMolList[i]
+                    break
+                elif keepIsomorphic and mol.isIdentical(newMol):
+                    del newMolList[i]
+                    break
+            # Add the newly generated structures to the original list
+            # This is not optimal, but is a temporary measure to ensure compatability until other issues are fixed
+            molList.extend(newMolList)
+        else:
+            molList = newMolList
 
     # Generate remaining resonance structures
     methodList = populate_resonance_algorithms(features)
