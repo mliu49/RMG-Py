@@ -1302,6 +1302,9 @@ class KineticsFamily(Database):
         for struct in productStructures:
             if isinstance(struct, Molecule):
                 struct.update()
+                # Check to see if there are any odd bond values
+                bonds = list(set([bond for atom in struct.atoms for bond in atom.bonds.values()]))
+                assert all([bond.order in [1, 2, 3, 1.5] for bond in bonds]), 'Invalid product structure in {0}:\n{1}'.format(self.label, struct.toAdjacencyList(forceBondStr=True))
             elif isinstance(struct, Group):
                 struct.resetRingMembership()
                 if label in ['1,2_insertion_co', 'r_addition_com', 'co_disproportionation',
