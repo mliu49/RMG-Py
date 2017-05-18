@@ -546,8 +546,16 @@ class KineticsFamily(Database):
         self.name = self.label
         self.boundaryAtoms = local_context.get('boundaryAtoms', None)
 
+        # Retrieve the entries associated with reactant labels in the forwardTemplate
+        reactants = []
+        for reactantLabel in self.forwardTemplate.reactants:
+            if isinstance(reactantLabel, str):
+                reactants.append(self.groups.entries[reactantLabel])
+            elif isinstance(reactantLabel, tuple):
+                reactants.append(tuple([self.groups.entries[label] for label in reactantLabel]))
+        self.forwardTemplate.reactants = reactants
+
         # Generate the reverse template if necessary
-        self.forwardTemplate.reactants = [self.groups.entries[label] for label in self.forwardTemplate.reactants]
         if self.ownReverse:
             self.forwardTemplate.products = self.forwardTemplate.reactants[:]
             self.reverseTemplate = None
@@ -821,28 +829,29 @@ class KineticsFamily(Database):
         the top-level nodes. For reactants defined by multiple structures, only
         the first is used here; it is assumed to be the most generic.
         """
-
+        print reactants0
         # First, generate a list of reactant structures that are actual
         # structures, rather than unions
         reactantStructures = []
         logging.log(1, "Generating template for products.")
         for reactant in reactants0:
-            if isinstance(reactant, list):  reactants = [reactant[0]]
-            else:                           reactants = [reactant]
-
-            logging.log(1, "Reactants: {0}".format(reactants))
-            for s in reactants:
-                logging.log(1, "Reactant {0}".format(s))
-                struct = s.item
+            if isinstance(reactant, list):
+                raise NotImplementedError('Not expecting a list of groups here.')
+            elif isinstance(reactant, tuple):
+                # The reactant template is defined with two groups, which need to be merged
+                reactantStructures.append(self._mergeGroupFragments(reactant))
+            else:
+                logging.log(1, "Reactant {0}".format(reactant))
+                struct = reactant.item
                 if isinstance(struct, LogicNode):
                     all_structures = struct.getPossibleStructures(self.groups.entries)
-                    logging.log(1, 'Expanding logic node {0} to {1}'.format(s, all_structures))
+                    logging.log(1, 'Expanding logic node {0} to {1}'.format(reactant, all_structures))
                     reactantStructures.append(all_structures)
                     for p in all_structures:
-                        logging.log(1, p.toAdjacencyList() )
+                        logging.log(1, p.toAdjacencyList())
                 else:
                     reactantStructures.append([struct])
-                    logging.log(1, struct.toAdjacencyList() )
+                    logging.log(1, struct.toAdjacencyList())
 
         # Second, get all possible combinations of reactant structures
         reactantStructures = getAllCombinations(reactantStructures)
@@ -910,6 +919,32 @@ class KineticsFamily(Database):
                 productSet.append(entry)
 
         return productSet
+
+    def _mergeGroupFragments(self, groupTuple):
+        """
+        For unimolecular reaction families where the reactant is defined by two separate groups,
+        merge the group fragments together into a single group.
+        """
+        if len(groupTuple) != 2:
+            raise NotImplementedError('Only tuples of length 2 are supported for reaction templates.')
+
+        fragments = []
+        for group in groupTuple:
+            struct = group.item
+            if isinstance(struct, LogicNode):
+                all_structures = struct.getPossibleStructures(self.groups.entries)
+                logging.log(1, 'Expanding logic node {0} to {1}'.format(group, all_structures))
+                fragments.append(all_structures)
+            else:
+                fragments.append([struct])
+        # Get all combinations of the group fragments
+        combinations = getAllCombinations(fragments)
+        # Merge the fragment combinations to form full reactants
+        reactants = []
+        for c in combinations:
+            reactants.append(c[0].mergeGroups(c[1]))
+
+        return reactants
 
     def hasRateRule(self, template):
         """
@@ -1308,12 +1343,21 @@ class KineticsFamily(Database):
         matches the provided template reactant, or an empty list if not.
         """
 
-        if isinstance(templateReactant, list): templateReactant = templateReactant[0]
-        struct = templateReactant.item
+        if isinstance(templateReactant, list):
+            raise NotImplementedError('Not expecting a list of groups here.')
+        elif isinstance(templateReactant, tuple):
+            struct = self._mergeGroupFragments(templateReactant)
+        else:
+            struct = templateReactant.item
         
         if isinstance(struct, LogicNode):
             mappings = []
             for child_structure in struct.getPossibleStructures(self.groups.entries):
+                mappings.extend(reactant.findSubgraphIsomorphisms(child_structure))
+            return mappings
+        elif isinstance(struct, list):
+            mappings = []
+            for child_structure in struct:
                 mappings.extend(reactant.findSubgraphIsomorphisms(child_structure))
             return mappings
         elif isinstance(struct, Group):
