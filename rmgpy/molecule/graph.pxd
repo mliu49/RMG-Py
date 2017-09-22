@@ -139,6 +139,8 @@ cdef class Graph:
 
     cpdef list __exploreCyclesRecursively(self, list chain, list cycles)
 
+    cpdef list getSmallestSetOfSmallestRingsOld(self)
+
     cpdef list getSmallestSetOfSmallestRings(self)
 
     cpdef list getRelevantCycles(self)

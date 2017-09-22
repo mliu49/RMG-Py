@@ -909,6 +909,103 @@ cdef class Graph:
         # At this point we should have discovered all of the cycles involving the current chain
         return cycles
 
+    cpdef list getSmallestSetOfSmallestRingsOld(self):
+        """
+        Return a list of the smallest set of smallest rings in the graph. The
+        algorithm implements was adapted from a description by Fan, Panaye,
+        Doucet, and Barbu (doi: 10.1021/ci00015a002)
+
+        B. T. Fan, A. Panaye, J. P. Doucet, and A. Barbu. "Ring Perception: A
+        New Algorithm for Directly Finding the Smallest Set of Smallest Rings
+        from a Connection Table." *J. Chem. Inf. Comput. Sci.* **33**,
+        p. 657-662 (1993).
+        """
+        cdef Graph graph
+        cdef bint done, found
+        cdef list cycleList, cycles, cycle, graphs, neighbors, verticesToRemove, vertices
+        cdef Vertex vertex, rootVertex
+
+        # Make a copy of the graph so we don't modify the original
+        graph = self.copy(deep=True)
+        vertices = graph.vertices[:]
+
+        # Step 1: Remove all terminal vertices
+        done = False
+        while not done:
+            verticesToRemove = []
+            for vertex in graph.vertices:
+                if len(vertex.edges) == 1: verticesToRemove.append(vertex)
+            done = len(verticesToRemove) == 0
+            # Remove identified vertices from graph
+            for vertex in verticesToRemove:
+                graph.removeVertex(vertex)
+
+        # Step 2: Remove all other vertices that are not part of cycles
+        verticesToRemove = []
+        for vertex in graph.vertices:
+            found = graph.isVertexInCycle(vertex)
+            if not found:
+                verticesToRemove.append(vertex)
+        # Remove identified vertices from graph
+        for vertex in verticesToRemove:
+            graph.removeVertex(vertex)
+
+        # Step 3: Split graph into remaining subgraphs
+        graphs = graph.split()
+
+        # Step 4: Find ring sets in each subgraph
+        cycleList = []
+        for graph in graphs:
+
+            while len(graph.vertices) > 0:
+
+                # Choose root vertex as vertex with smallest number of edges
+                rootVertex = None
+                graph.updateConnectivityValues()
+                for vertex in graph.vertices:
+                    if rootVertex is None:
+                        rootVertex = vertex
+                    elif getVertexConnectivityValue(vertex) > getVertexConnectivityValue(rootVertex):
+                        rootVertex = vertex
+
+                # Get all cycles involving the root vertex
+                cycles = graph.getAllCycles(rootVertex)
+                if len(cycles) == 0:
+                    # This vertex is no longer in a ring, so remove it
+                    graph.removeVertex(rootVertex)
+                    continue
+
+                # Keep the smallest of the cycles found above
+                cycle = cycles[0]
+                for c in cycles[1:]:
+                    if len(c) < len(cycle):
+                        cycle = c
+                cycleList.append(cycle)
+
+                # Remove the root vertex to create single edges, note this will not
+                # function properly if there is no vertex with 2 edges (i.e. cubane)
+                graph.removeVertex(rootVertex)
+
+                # Remove from the graph all vertices in the cycle that have only one edge
+                loneCarbon = True
+                while loneCarbon:
+                    loneCarbon = False
+                    verticesToRemove = []
+
+                    for vertex in cycle:
+                        if len(vertex.edges) == 1:
+                            loneCarbon = True
+                            verticesToRemove.append(vertex)
+                    else:
+                        for vertex in verticesToRemove:
+                            graph.removeVertex(vertex)
+
+        # Map atoms in cycles back to atoms in original graph
+        for i in range(len(cycleList)):
+            cycleList[i] = [self.vertices[vertices.index(v)] for v in cycleList[i]]
+
+        return cycleList
+
     cpdef list getSmallestSetOfSmallestRings(self):
         """
         Returns the smallest set of smallest rings as a list of lists.
