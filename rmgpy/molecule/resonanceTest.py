@@ -1087,6 +1087,68 @@ multiplicity 2
 
         self.assertEqual(len(out), 1)
 
+    def testFalseNegativePolycyclicAromaticityPerception(self):
+        """Test that we generate proper structures for a polycyclic aromatic that RDKit mis-identifies."""
+        mol = Molecule(SMILES='C=C1C=CC=C2C=C[CH]C=C12')
+        out = mol.generateResonanceIsomers()
+
+        clar = Molecule().fromAdjacencyList("""
+multiplicity 2
+1  C u0 p0 c0 {2,B} {3,B} {7,S}
+2  C u0 p0 c0 {1,B} {5,B} {6,S}
+3  C u0 p0 c0 {1,B} {4,B} {11,S}
+4  C u0 p0 c0 {3,B} {8,B} {13,S}
+5  C u0 p0 c0 {2,B} {8,B} {15,S}
+6  C u0 p0 c0 {2,S} {9,D} {16,S}
+7  C u0 p0 c0 {1,S} {10,D} {18,S}
+8  C u0 p0 c0 {4,B} {5,B} {14,S}
+9  C u0 p0 c0 {6,D} {10,S} {17,S}
+10 C u0 p0 c0 {7,D} {9,S} {12,S}
+11 C u1 p0 c0 {3,S} {19,S} {20,S}
+12 H u0 p0 c0 {10,S}
+13 H u0 p0 c0 {4,S}
+14 H u0 p0 c0 {8,S}
+15 H u0 p0 c0 {5,S}
+16 H u0 p0 c0 {6,S}
+17 H u0 p0 c0 {9,S}
+18 H u0 p0 c0 {7,S}
+19 H u0 p0 c0 {11,S}
+20 H u0 p0 c0 {11,S}
+""")
+
+        self.assertEqual(len(out), 6)
+        self.assertTrue(any([m.isIsomorphic(clar) for m in out]))
+
+    def testFalseNegativeAromaticityPerception(self):
+        """Test that we obtain the correct aromatic structure for a monocyclic aromatic that RDKit mis-identifies."""
+        mol = Molecule(SMILES='[CH2]C=C1C=CC(=C)C=C1')
+        out = mol.generateResonanceIsomers()
+
+        aromatic = Molecule().fromAdjacencyList("""
+multiplicity 2
+1  C u0 p0 c0 {4,B} {5,B} {7,S}
+2  C u0 p0 c0 {3,B} {6,B} {8,S}
+3  C u0 p0 c0 {2,B} {4,B} {10,S}
+4  C u0 p0 c0 {1,B} {3,B} {11,S}
+5  C u0 p0 c0 {1,B} {6,B} {13,S}
+6  C u0 p0 c0 {2,B} {5,B} {14,S}
+7  C u0 p0 c0 {1,S} {9,D} {12,S}
+8  C u1 p0 c0 {2,S} {15,S} {16,S}
+9  C u0 p0 c0 {7,D} {17,S} {18,S}
+10 H u0 p0 c0 {3,S}
+11 H u0 p0 c0 {4,S}
+12 H u0 p0 c0 {7,S}
+13 H u0 p0 c0 {5,S}
+14 H u0 p0 c0 {6,S}
+15 H u0 p0 c0 {8,S}
+16 H u0 p0 c0 {8,S}
+17 H u0 p0 c0 {9,S}
+18 H u0 p0 c0 {9,S}
+""")
+
+        self.assertEqual(len(out), 5)
+        self.assertTrue(any([m.isIsomorphic(aromatic) for m in out]))
+
 
 class ClarTest(unittest.TestCase):
     """
