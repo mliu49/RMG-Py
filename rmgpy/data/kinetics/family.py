@@ -1081,10 +1081,10 @@ class KineticsFamily(Database):
             item = Reaction(reactants=[Species(molecule=[m.molecule[0].copy(deep=True)], label=m.label) for m in entry.item.reactants],
                              products=[Species(molecule=[m.molecule[0].copy(deep=True)], label=m.label) for m in entry.item.products])
             for reactant in item.reactants:
-                reactant.generateResonanceIsomers()
+                reactant.generate_resonance_structures()
                 reactant.thermo = thermoDatabase.getThermoData(reactant, trainingSet=True) 
             for product in item.products:
-                product.generateResonanceIsomers()
+                product.generate_resonance_structures()
                 product.thermo = thermoDatabase.getThermoData(product,trainingSet=True)
             # Now that we have the thermo, we can get the reverse k(T)
             item.kinetics = data
@@ -1538,7 +1538,7 @@ class KineticsFamily(Database):
         if isinstance(reaction.reactants[0], Molecule):
             for mol in reaction.reactants:
                 spec = Species(molecule=[mol])
-                spec.generateResonanceIsomers(keepIsomorphic=True)
+                spec.generate_resonance_structures(keepIsomorphic=True)
                 specReactants.append(spec)
         elif isinstance(reaction.reactants[0], Species):
             specReactants = reaction.reactants
@@ -1678,10 +1678,10 @@ class KineticsFamily(Database):
         # don't generate the given products
         if products is not None:
             if isinstance(products[0],Molecule):
-                products = [product.generateResonanceIsomers() for product in products]
+                products = [product.generate_resonance_structures() for product in products]
             elif isinstance(products[0],Species):
                 for product in products:
-                    product.generateResonanceIsomers(keepIsomorphic=False)
+                    product.generate_resonance_structures(keepIsomorphic=False)
                 products = [product.molecule for product in products]
             else:
                 raise TypeError('products input to __generateReactions must be Species or Molecule Objects')

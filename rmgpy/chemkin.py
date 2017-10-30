@@ -754,7 +754,7 @@ def loadSpeciesDictionary(path):
             if line.strip() == '' and adjlist.strip() != '':
                 # Finish this adjacency list
                 species = Species().fromAdjacencyList(adjlist)
-                species.generateResonanceIsomers()
+                species.generate_resonance_structures()
                 label = species.label
                 for inert in inerts:
                     if inert.isIsomorphic(species):
@@ -772,7 +772,7 @@ def loadSpeciesDictionary(path):
         else: #reach end of file
             if adjlist.strip() != '':
                 species = Species().fromAdjacencyList(adjlist)
-                species.generateResonanceIsomers()
+                species.generate_resonance_structures()
                 label = species.label
                 for inert in inerts:
                     if inert.isIsomorphic(species):

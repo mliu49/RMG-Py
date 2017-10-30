@@ -132,7 +132,7 @@ def _labelListOfSpecies(speciesTuple):
             mol.assignAtomIDs()
             # remake resonance isomers with new labeles
             species.molecule = [mol]
-            species.generateResonanceIsomers(keepIsomorphic = True)
+            species.generate_resonance_structures(keepIsomorphic = True)
 
 def getMoleculeTuples(speciesTuple):
     """
@@ -266,12 +266,12 @@ def convertToSpeciesObjects(reaction):
     for i, mol in enumerate(reaction.reactants):
         spec = Species(molecule = [mol])
         if not reaction.isForward:
-            spec.generateResonanceIsomers(keepIsomorphic=True)
+            spec.generate_resonance_structures(keepIsomorphic=True)
         reaction.reactants[i] = spec
     for i, mol in enumerate(reaction.products):
         spec = Species(molecule = [mol])
         if reaction.isForward:
-            spec.generateResonanceIsomers(keepIsomorphic=True)
+            spec.generate_resonance_structures(keepIsomorphic=True)
         reaction.products[i] = spec
 
     # convert reaction.pairs object to species

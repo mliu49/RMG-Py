@@ -114,7 +114,7 @@ class TestReactionDegeneracy(unittest.TestCase):
         # assign atom IDs
         for reactant in reactants: reactant.assignAtomIDs()
 
-        reactants = [mol.generateResonanceIsomers() for mol in reactants]
+        reactants = [mol.generate_resonance_structures() for mol in reactants]
 
         combinations = itertools.product(reactants[0], reactants[1])
 
@@ -138,7 +138,7 @@ class TestReactionDegeneracy(unittest.TestCase):
         # assign atom IDs
         for reactant in reactants: reactant.assignAtomIDs()
         
-        reactants = [mol.generateResonanceIsomers() for mol in reactants]
+        reactants = [mol.generate_resonance_structures() for mol in reactants]
 
         combinations = itertools.product(reactants[0], reactants[1])
 
@@ -147,7 +147,7 @@ class TestReactionDegeneracy(unittest.TestCase):
             reactionList.extend(self.database.kinetics.families[family].generateReactions(combi))
 
         product = Species().fromSMILES('C[C]1CC=CC2=CC=CC=C12')
-        product.generateResonanceIsomers()
+        product.generate_resonance_structures()
 
         targetReactions = []
         for rxn in reactionList:
@@ -172,7 +172,7 @@ class TestReactionDegeneracy(unittest.TestCase):
         # assign atom IDs
         for reactant in reactants: reactant.assignAtomIDs()
 
-        reactants = [mol.generateResonanceIsomers() for mol in reactants]
+        reactants = [mol.generate_resonance_structures() for mol in reactants]
 
         combinations = itertools.product(reactants[0], reactants[1])
 
@@ -367,7 +367,7 @@ class TestReactionDegeneracy(unittest.TestCase):
         """
         spcA = Species().fromSMILES('[H]')
         spcB = Species().fromSMILES('CC=C[CH]C')
-        spcB.generateResonanceIsomers(keepIsomorphic=True)
+        spcB.generate_resonance_structures(keepIsomorphic=True)
         spcTuples = [(spcA,spcB)]
         
         reactionList = list(react(*spcTuples))
@@ -375,7 +375,7 @@ class TestReactionDegeneracy(unittest.TestCase):
         # find reaction with a specific product
         specific_product = Species().fromSMILES('[CH2]C=C[CH]C')
         
-        specific_product.generateResonanceIsomers()
+        specific_product.generate_resonance_structures()
         
         specific_reaction = None
         for rxn in reactionList:
@@ -453,14 +453,14 @@ class TestReactionDegeneracy(unittest.TestCase):
         """
         spcA = Species().fromSMILES('[H]')
         spcB = Species().fromSMILES('CC=C[CH]C')
-        spcB.generateResonanceIsomers(keepIsomorphic=True)
+        spcB.generate_resonance_structures(keepIsomorphic=True)
         spcTuples = [(spcA,spcB)]
         
         reactionList = list(react(*spcTuples))
         
         # find reaction with a specific product
         specific_product = Species().fromSMILES('CC=C[CH][CH2]')
-        specific_product.generateResonanceIsomers()
+        specific_product.generate_resonance_structures()
         
         specific_reactions_found = 0
         templates_found = []
@@ -957,8 +957,8 @@ class TestKinetics(unittest.TestCase):
         r2 = Species(molecule=[Molecule().fromAdjacencyList(adjlist[1])])
         p1 = Species(molecule=[Molecule().fromAdjacencyList(adjlist[2])])
         p2 = Species(molecule=[Molecule().fromAdjacencyList(adjlist[3])])
-        r1.generateResonanceIsomers(keepIsomorphic=True)
-        p1.generateResonanceIsomers(keepIsomorphic=True)
+        r1.generate_resonance_structures(keepIsomorphic=True)
+        p1.generate_resonance_structures(keepIsomorphic=True)
         
         
         rxn = TemplateReaction(reactants = [r1, r2], 

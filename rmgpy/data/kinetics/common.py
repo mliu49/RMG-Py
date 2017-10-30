@@ -158,7 +158,7 @@ def filterReactions(reactants, products, reactionList):
             s = mol
         else:
             s = Species(molecule=[mol])
-        s.generateResonanceIsomers()
+        s.generate_resonance_structures()
         reactant_species.append(s)
     reactants = reactant_species
     product_species = []
@@ -167,7 +167,7 @@ def filterReactions(reactants, products, reactionList):
             s = mol
         else:
             s = Species(molecule=[mol])
-        s.generateResonanceIsomers()
+        s.generate_resonance_structures()
         product_species.append(s)
     products = product_species
     
