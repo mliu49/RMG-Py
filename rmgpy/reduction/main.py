@@ -80,13 +80,12 @@ def main():
     reactionModel = rmg.reactionModel
     initialize(rmg.outputDirectory, reactionModel.core.reactions)
 
-    atol, rtol = rmg.absoluteTolerance, rmg.relativeTolerance
+    atol, rtol = rmg.simulatorSettingsList[0].atol, rmg.simulatorSettingsList[0].rtol
     index = 0
     reactionSystem = rmg.reactionSystems[index]    
     
     #compute original target observables
-    observables = computeObservables(targets, reactionModel, reactionSystem, \
-     rmg.absoluteTolerance, rmg.relativeTolerance)
+    observables = computeObservables(targets, reactionModel, reactionSystem, atol, rtol)
 
     logger.info('Observables of original model:')
     for target, observable in zip(targets, observables):
