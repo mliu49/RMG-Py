@@ -55,6 +55,8 @@ cdef class Species:
     cdef str _fingerprint
     cdef str _inchi
 
+    cpdef bint is_equal(self, Species other)
+
     cpdef bint is_same(self, other)
 
     cpdef generate_resonance_structures(self,bint keepIsomorphic=?)

@@ -159,6 +159,45 @@ class Species(object):
         """
         return (Species, (self.index, self.label, self.thermo, self.conformer, self.molecule, self.transportData, self.molecularWeight, self.energyTransferModel, self.reactive, self.props))
 
+    def __hash__(self):
+        return hash(tuple([mol.fingerprint for mol in self.molecule]))
+
+    def __richcmp__(self, other, op):
+        if op == 0:  # Py_LT:
+            return self.inchi < other.inchi
+        elif op == 1:  # Py_LE:
+            return self.inchi <= other.inchi
+        elif op == 2:  # Py_EQ
+            return self.is_equal(other)
+        elif op == 3:  # Py_NE
+            return not self.is_equal(other)
+        elif op == 4:  # Py_GT:
+            return self.inchi > other.inchi
+        elif op == 5:  # Py_GE:
+            return self.inchi >= other.inchi
+
+    def is_equal(self, other):
+        """
+        Equality comparison for :class:`Species` objects.
+
+        Does not check isomorphism, but "chemical identity"
+        as determined by multiplicity and InChI strings.
+        """
+        if not isinstance(other, Species):
+            return False
+        elif self is other:
+            return True
+        elif not (self.molecule or other.molecule):
+            return self.label == other.label  # Both have empty molecule attributes, so compare labels
+        elif not (self.molecule and other.molecule):
+            return False  # Only one has an empty molecule attribute
+        elif self.molecule[0].fingerprint != other.molecule[0].fingerprint:
+            return False
+        elif self.molecule[0].multiplicity == other.molecule[0].multiplicity and self.inchi == other.inchi:
+            return True
+        else:
+            return False
+
     def is_same(self, other):
         """
         Chemical identity comparison via InChI strings.
