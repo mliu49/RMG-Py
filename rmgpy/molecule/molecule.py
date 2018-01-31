@@ -739,21 +739,30 @@ class Molecule(Graph):
             self.multiplicity = multiplicity
 
     def __hash__(self):
-        return hash((self.fingerprint))
+        return hash((self.fingerprint,))
             
-    def __richcmp__(x, y, op):
-        if op == 2:#Py_EQ
-            return x.is_equal(y)
-        if op == 3:#Py_NE
-            return not x.is_equal(y)
-        else:
-            raise NotImplementedError("Can only check equality of molecules, not > or <")
-    
+    def __richcmp__(self, other, op):
+        if op == 0:  # Py_LT:
+            return self.inchi < other.inchi
+        elif op == 1:  # Py_LE:
+            return self.inchi <= other.inchi
+        elif op == 2:  # Py_EQ
+            return self.is_equal(other)
+        elif op == 3:  # Py_NE
+            return not self.is_equal(other)
+        elif op == 4:  # Py_GT:
+            return self.inchi > other.inchi
+        elif op == 5:  # Py_GE:
+            return self.inchi >= other.inchi
+
     def is_equal(self,other):
         """Method to test equality of two Molecule objects."""
-        if not isinstance(other, Molecule): return False #different type
-        elif self is other: return True #same reference in memory
-        elif self.fingerprint != other.fingerprint: return False
+        if not isinstance(other, Molecule):
+            return False  # different type
+        elif self is other:
+            return True  # same reference in memory
+        elif self.fingerprint != other.fingerprint:
+            return False
         else:
             return self.isIsomorphic(other)   
 
