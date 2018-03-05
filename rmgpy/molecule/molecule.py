@@ -37,29 +37,29 @@ describe the corresponding atom or bond.
 """
 
 import cython
+import itertools
 import logging
 import os
-import numpy
 import urllib
+
 from collections import OrderedDict
-import itertools
 from copy import deepcopy
 
-import element as elements
-try:
-    import openbabel
-except:
-    pass
-from .graph import Vertex, Edge, Graph, getVertexConnectivityValue
-import rmgpy.molecule.group as gr
-from rmgpy.molecule.pathfinder import find_shortest_path
-from .atomtype import AtomType, atomTypes, getAtomType, AtomTypeError
+import numpy
+
 import rmgpy.constants as constants
-import rmgpy.molecule.parser as parser
+import rmgpy.molecule.element as elements
 import rmgpy.molecule.generator as generator
+import rmgpy.molecule.group as gr
+import rmgpy.molecule.parser as parser
 import rmgpy.molecule.resonance as resonance
-from .kekulize import kekulize
-from .adjlist import Saturator
+
+from rmgpy.exceptions import AtomTypeError
+from rmgpy.molecule.adjlist import Saturator
+from rmgpy.molecule.atomtype import AtomType, atomTypes, getAtomType
+from rmgpy.molecule.graph import Vertex, Edge, Graph, getVertexConnectivityValue
+from rmgpy.molecule.kekulize import kekulize
+from rmgpy.molecule.pathfinder import find_shortest_path
 
 ################################################################################
 
