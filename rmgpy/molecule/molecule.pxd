@@ -198,6 +198,8 @@ cdef class Molecule(Graph):
 
     cpdef toAdjacencyList(self, str label=?, bint removeH=?, bint removeLonePairs=?, bint oldStyle=?)
 
+    cpdef bint has_atom_type(self, AtomType atomtype)
+
     cpdef bint isLinear(self) except -2
 
     cpdef int countInternalRotors(self) except -2

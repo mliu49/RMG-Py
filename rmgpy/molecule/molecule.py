@@ -56,7 +56,7 @@ import rmgpy.molecule.resonance as resonance
 
 from rmgpy.exceptions import AtomTypeError
 from rmgpy.molecule.adjlist import Saturator
-from rmgpy.molecule.atomtype import AtomType, atomTypes, getAtomType
+from rmgpy.molecule.atomtype import AtomType, atomTypes, getFeatures, getAtomType
 from rmgpy.molecule.graph import Vertex, Edge, Graph, getVertexConnectivityValue
 from rmgpy.molecule.kekulize import kekulize
 from rmgpy.molecule.pathfinder import find_shortest_path
@@ -1468,7 +1468,23 @@ class Molecule(Graph):
         from .adjlist import toAdjacencyList
         result = toAdjacencyList(self.vertices, self.multiplicity,  label=label, group=False, removeH=removeH, removeLonePairs=removeLonePairs, oldStyle=oldStyle)
         return result
-    
+
+    def has_atom_type(self, atomtype):
+        """
+        Check if any of the atoms in this molecule satisfies the specified AtomType.
+        """
+        for atom in self.atoms:
+            if atom.symbol in atomtype.generic:
+                mol_features = getFeatures(atom, atom.edges)
+                at_features = atomtype.getFeatures()
+                for mol_feature, at_feature in itertools.izip(mol_features, at_features):
+                    if at_feature and mol_feature not in at_feature:
+                        break
+                else:
+                    return True
+        else:
+            return False
+
     def find_H_bonds(self):
         """
         generates a list of (new-existing H bonds ignored) possible Hbond coordinates [(i1,j1),(i2,j2),...] where i and j values
