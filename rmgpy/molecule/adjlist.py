@@ -34,9 +34,10 @@ adjacency list format used by Reaction Mechanism Generator (RMG).
 """
 import logging
 import re
-from .molecule import Atom, Bond, getAtomType
-from .group import GroupAtom, GroupBond
-from .element import getElement, PeriodicSystem
+from rmgpy.molecule.atomtype import getAtomType
+from rmgpy.molecule.element import getElement, PeriodicSystem
+from rmgpy.molecule.group import GroupAtom, GroupBond
+from rmgpy.molecule.molecule import Atom, Bond
 from rmgpy.exceptions import InvalidAdjacencyListError
 
 class Saturator(object):
