@@ -638,6 +638,7 @@ class Uncertainty:
         number is the number of highest contributing uncertain parameters desired to be plotted
         fileformat can be either .png, .pdf, or .svg
         """
+        output = {}
         for sensSpecies in sensitiveSpecies:
             csvfilePath = os.path.join(self.outputDirectory, 'solver', 'sensitivity_{0}_SPC_{1}.csv'.format(1, sensSpecies.index))
             time, dataList = parseCSVData(csvfilePath)
@@ -697,6 +698,9 @@ class Uncertainty:
             
             thermoUncertaintyPlotPath = os.path.join(self.outputDirectory, 'thermoLocalUncertainty_{0}'.format(sensSpecies.toChemkin()) + fileformat)
             reactionUncertaintyPlotPath = os.path.join(self.outputDirectory, 'kineticsLocalUncertainty_{0}'.format(sensSpecies.toChemkin()) + fileformat)
-            ReactionSensitivityPlot(xVar=time,yVar=reactionDataList,numReactions=number).uncertaintyPlot(totalVariance, filename=reactionUncertaintyPlotPath)
-            ThermoSensitivityPlot(xVar=time,yVar=thermoDataList,numSpecies=number).uncertaintyPlot(totalVariance, filename=thermoUncertaintyPlotPath)
+            reactionUncertainty = ReactionSensitivityPlot(xVar=time,yVar=reactionDataList,numReactions=number).uncertaintyPlot(totalVariance, filename=reactionUncertaintyPlotPath)
+            thermoUncertainty = ThermoSensitivityPlot(xVar=time,yVar=thermoDataList,numSpecies=number).uncertaintyPlot(totalVariance, filename=thermoUncertaintyPlotPath)
 
+            output[sensSpecies] = (totalVariance, reactionUncertainty, thermoUncertainty)
+
+        return output
