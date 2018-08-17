@@ -129,13 +129,13 @@ def analyze_molecule(mol):
                 }
 
     if features['isCyclic']:
-        aromaticRings = mol.getAromaticRings()[0]
-        if len(aromaticRings) > 0:
+        aromatic_rings = mol.getAromaticRings()[0]
+        if len(aromatic_rings) > 0:
             features['isAromatic'] = True
-        if len(aromaticRings) > 1:
+        if len(aromatic_rings) > 1:
             features['isPolycyclicAromatic'] = True
         if features['isRadical'] and features['isAromatic']:
-            features['isArylRadical'] = mol.isArylRadical(aromaticRings)
+            features['isArylRadical'] = mol.isArylRadical(aromatic_rings)
     for atom in mol.vertices:
         if atom.isNitrogen():
             features['hasNitrogen'] = True
@@ -259,6 +259,7 @@ def generate_resonance_structures(mol, clar_structures=True, keep_isomorphic=Fal
         return filtration.filter_structures(mol_list)
 
     return mol_list
+
 
 def _generate_resonance_structures(mol_list, method_list, keep_isomorphic=False, copy=False):
     """
@@ -697,7 +698,7 @@ def generate_aromatic_resonance_structures(mol, features=None):
     rings = molecule.getAllSimpleCyclesOfSize(6)
 
     # Then determine which ones are aromatic
-    aromaticBonds = molecule.getAromaticRings(rings)[1]
+    aromatic_bonds = molecule.getAromaticRings(rings)[1]
 
     # Attempt to rearrange electrons to obtain a structure with the most aromatic rings
     # Possible rearrangements include aryne resonance and allyl resonance
@@ -706,45 +707,45 @@ def generate_aromatic_resonance_structures(mol, features=None):
         res_list.append(generate_allyl_delocalization_resonance_structures)
 
     if molecule.isAromatic():
-        kekuleList = generate_kekule_structure(molecule)
+        kekule_list = generate_kekule_structure(molecule)
     else:
-        kekuleList = [molecule]
+        kekule_list = [molecule]
 
-    _generate_resonance_structures(kekuleList, res_list)
+    _generate_resonance_structures(kekule_list, res_list)
 
-    if len(kekuleList) > 1:
+    if len(kekule_list) > 1:
         # We found additional structures, so we need to evaluate all of them
-        maxNum = 0
+        max_num = 0
         mol_list = []
 
         # Iterate through the adjacent resonance structures and keep the structures with the most aromatic rings
-        for mol0 in kekuleList:
-            aromaticBonds = mol0.getAromaticRings()[1]
-            if len(aromaticBonds) > maxNum:
-                maxNum = len(aromaticBonds)
-                mol_list = [(mol0, aromaticBonds)]
-            elif len(aromaticBonds) == maxNum:
-                mol_list.append((mol0, aromaticBonds))
+        for mol0 in kekule_list:
+            aromatic_bonds = mol0.getAromaticRings()[1]
+            if len(aromatic_bonds) > max_num:
+                max_num = len(aromatic_bonds)
+                mol_list = [(mol0, aromatic_bonds)]
+            elif len(aromatic_bonds) == max_num:
+                mol_list.append((mol0, aromatic_bonds))
     else:
         # Otherwise, it is not possible to increase the number of aromatic rings by moving electrons,
         # so go ahead with the inputted form of the molecule
-        mol_list = [(molecule, aromaticBonds)]
+        mol_list = [(molecule, aromatic_bonds)]
 
     new_mol_list = []
 
     # Generate the aromatic resonance structure(s)
-    for mol0, aromaticBonds in mol_list:
-        if not aromaticBonds:
+    for mol0, aromatic_bonds in mol_list:
+        if not aromatic_bonds:
             continue
         # Save original bond orders in case this doesn't work out
-        originalBonds = []
-        for ring in aromaticBonds:
-            originalOrder = []
+        original_bonds = []
+        for ring in aromatic_bonds:
+            original_order = []
             for bond in ring:
-                originalOrder.append(bond.order)
-            originalBonds.append(originalOrder)
+                original_order.append(bond.order)
+            original_bonds.append(original_order)
         # Change bond types to benzene bonds for all aromatic rings
-        for ring in aromaticBonds:
+        for ring in aromatic_bonds:
             for bond in ring:
                 bond.order = 1.5
 
@@ -753,27 +754,27 @@ def generate_aromatic_resonance_structures(mol, features=None):
         except AtomTypeError:
             # If this didn't work the first time, then there might be a ring that is not actually aromatic
             # Reset our changes
-            for ring, originalOrder in itertools.izip(aromaticBonds, originalBonds):
-                for bond, order in itertools.izip(ring, originalOrder):
+            for ring, original_order in itertools.izip(aromatic_bonds, original_bonds):
+                for bond, order in itertools.izip(ring, original_order):
                     bond.order = order
             # Try to make each ring aromatic, one by one
             i = 0
             counter = 0
-            while i < len(aromaticBonds) and counter < 2*len(aromaticBonds):
+            while i < len(aromatic_bonds) and counter < 2*len(aromatic_bonds):
                 counter += 1
-                originalOrder = []
-                for bond in aromaticBonds[i]:
-                    originalOrder.append(bond.order)
+                original_order = []
+                for bond in aromatic_bonds[i]:
+                    original_order.append(bond.order)
                     bond.order = 1.5
                 try:
                     mol0.updateAtomTypes(logSpecies=False)
                 except AtomTypeError:
                     # This ring could not be made aromatic, possibly because it depends on other rings
                     # Undo changes
-                    for bond, order in itertools.izip(aromaticBonds[i], originalOrder):
+                    for bond, order in itertools.izip(aromatic_bonds[i], original_order):
                         bond.order = order
                     # Move it to the end of the list, and go on to the next ring
-                    aromaticBonds.append(aromaticBonds.pop(i))
+                    aromatic_bonds.append(aromatic_bonds.pop(i))
                     mol0.updateAtomTypes(logSpecies=False)
                     continue
                 else:
@@ -907,6 +908,7 @@ def generate_kekule_structure(mol):
 
     return [molecule]
 
+
 def generate_opposite_kekule_structure(mol):
     """
     Generate the Kekule structure with opposite single/double bond arrangement
@@ -921,26 +923,26 @@ def generate_opposite_kekule_structure(mol):
 
     molecule = mol.copy(deep=True)
 
-    aromaticBonds = molecule.getAromaticRings()[1]
+    aromatic_bonds = molecule.getAromaticRings()[1]
 
     # We can only do this for single ring aromatics for now
-    if len(aromaticBonds) != 1:
+    if len(aromatic_bonds) != 1:
         return []
 
-    numS = 0
-    numD = 0
-    for bond in aromaticBonds[0]:
+    num_s = 0
+    num_d = 0
+    for bond in aromatic_bonds[0]:
         if bond.isSingle():
-            numS += 1
+            num_s += 1
             bond.order = 2
         elif bond.isDouble():
-            numD += 1
+            num_d += 1
             bond.order = 1
         else:
             # Something is wrong: there is a bond that is not single or double
             return []
 
-    if numS != 3 or numD != 3:
+    if num_s != 3 or num_d != 3:
         return []
 
     try:
@@ -949,6 +951,7 @@ def generate_opposite_kekule_structure(mol):
         return []
     else:
         return [molecule]
+
 
 def generate_isomorphic_resonance_structures(mol, saturate_h=False):
     """
@@ -981,11 +984,11 @@ def generate_isomorphic_resonance_structures(mol, saturate_h=False):
     while index < len(isomers):
         isomer = isomers[index]
         
-        newIsomers = []
+        new_isomers = []
         for algo in populate_resonance_algorithms():
-            newIsomers.extend(algo(isomer))
+            new_isomers.extend(algo(isomer))
         
-        for newIsomer in newIsomers:
+        for newIsomer in new_isomers:
             # Append to isomer list if unique
             for isom in isomers:
                 if isom.copy(deep=True).isIsomorphic(newIsomer.copy(deep=True)):
@@ -1028,13 +1031,13 @@ def generate_clar_structures(mol):
 
     mol_list = []
 
-    for new_mol, aromaticRings, bonds, solution in output:
+    for new_mol, aromatic_rings, bonds, solution in output:
 
         # The solution includes a part corresponding to rings, y, and a part corresponding to bonds, x, using
         # nomenclature from the paper. In y, 1 means the ring as a sextet, 0 means it does not.
         # In x, 1 corresponds to a double bond, 0 either means a single bond or the bond is part of a sextet.
-        y = solution[0:len(aromaticRings)]
-        x = solution[len(aromaticRings):]
+        y = solution[0:len(aromatic_rings)]
+        x = solution[len(aromatic_rings):]
 
         # Apply results to molecule - double bond locations first
         for index, bond in enumerate(bonds):
@@ -1046,7 +1049,7 @@ def generate_clar_structures(mol):
                 raise ValueError('Unaccepted bond value {0} obtained from optimization.'.format(x[index]))
 
         # Then apply locations of aromatic sextets by converting to benzene bonds
-        for index, ring in enumerate(aromaticRings):
+        for index, ring in enumerate(aromatic_rings):
             if y[index] == 1:
                 _clar_transformation(new_mol, ring)
 
@@ -1060,7 +1063,7 @@ def generate_clar_structures(mol):
     return mol_list
 
 
-def _clar_optimization(mol, constraints=None, maxNum=None):
+def _clar_optimization(mol, constraints=None, max_num=None):
     """
     Implements linear programming algorithm for finding Clar structures. This algorithm maximizes the number
     of Clar sextets within the constraints of molecular geometry and atom valency.
@@ -1090,15 +1093,15 @@ def _clar_optimization(mol, constraints=None, maxNum=None):
     # Make a copy of the molecule so we don't destroy the original
     molecule = mol.copy(deep=True)
 
-    aromaticRings = molecule.getAromaticRings()[0]
-    aromaticRings.sort(key=lambda x: sum([atom.id for atom in x]))
+    aromatic_rings = molecule.getAromaticRings()[0]
+    aromatic_rings.sort(key=lambda x: sum([atom.id for atom in x]))
 
-    if not aromaticRings:
+    if not aromatic_rings:
         return []
 
     # Get list of atoms that are in rings
     atoms = set()
-    for ring in aromaticRings:
+    for ring in aromatic_rings:
         atoms.update(ring)
     atoms = sorted(atoms, key=lambda x: x.id)
 
@@ -1120,7 +1123,7 @@ def _clar_optimization(mol, constraints=None, maxNum=None):
             exo.append(None)
 
     # Dimensions
-    l = len(aromaticRings)
+    l = len(aromatic_rings)
     m = len(atoms)
     n = l + len(bonds)
 
@@ -1128,9 +1131,9 @@ def _clar_optimization(mol, constraints=None, maxNum=None):
     # Part of equality constraint Ax=b
     a = []
     for atom in atoms:
-        inRing = [1 if atom in ring else 0 for ring in aromaticRings]
-        inBond = [1 if atom in [bond.atom1, bond.atom2] else 0 for bond in bonds]
-        a.append(inRing + inBond)
+        in_ring = [1 if atom in ring else 0 for ring in aromatic_rings]
+        in_bond = [1 if atom in [bond.atom1, bond.atom2] else 0 for bond in bonds]
+        a.append(in_ring + in_bond)
 
     # Objective vector for optimization: sextets have a weight of 1, double bonds have a weight of 0
     objective = [1] * l + [0] * len(bonds)
@@ -1166,7 +1169,7 @@ def _clar_optimization(mol, constraints=None, maxNum=None):
                     raise e
 
     status = lpsolve('solve', lp)
-    objVal, solution = lpsolve('get_solution', lp)[0:2]
+    obj_val, solution = lpsolve('get_solution', lp)[0:2]
     lpsolve('delete_lp', lp)  # Delete the LP problem to clear up memory
 
     # Reset signal handling since lpsolve changed it
@@ -1181,13 +1184,13 @@ def _clar_optimization(mol, constraints=None, maxNum=None):
         raise ILPSolutionError('Optimization could not find a valid solution.')
 
     # Check that we the result contains at least one aromatic sextet
-    if objVal == 0:
+    if obj_val == 0:
         return []
 
     # Check that the solution contains the maximum number of sextets possible
-    if maxNum is None:
-        maxNum = objVal  # This is the first solution, so the result should be an upper limit
-    elif objVal < maxNum:
+    if max_num is None:
+        max_num = obj_val  # This is the first solution, so the result should be an upper limit
+    elif obj_val < max_num:
         raise ILPSolutionError('Optimization obtained a sub-optimal solution.')
 
     if any([x != 1 and x != 0 for x in solution]):
@@ -1204,14 +1207,14 @@ def _clar_optimization(mol, constraints=None, maxNum=None):
 
     # Run optimization with additional constraints
     try:
-        innerSolutions = _clar_optimization(mol, constraints=constraints, maxNum=maxNum)
+        inner_solutions = _clar_optimization(mol, constraints=constraints, max_num=max_num)
     except ILPSolutionError:
-        innerSolutions = []
+        inner_solutions = []
 
-    return innerSolutions + [(molecule, aromaticRings, bonds, solution)]
+    return inner_solutions + [(molecule, aromatic_rings, bonds, solution)]
 
 
-def _clar_transformation(mol, aromaticRing):
+def _clar_transformation(mol, aromatic_ring):
     """
     Performs Clar transformation for given ring in a molecule, ie. conversion to aromatic sextet.
 
@@ -1223,12 +1226,12 @@ def _clar_transformation(mol, aromaticRing):
     """
     cython.declare(bondList=list, i=cython.int, atom1=Atom, atom2=Atom, bond=Bond)
 
-    bondList = []
+    bond_list = []
 
-    for i, atom1 in enumerate(aromaticRing):
-        for atom2 in aromaticRing[i + 1:]:
+    for i, atom1 in enumerate(aromatic_ring):
+        for atom2 in aromatic_ring[i + 1:]:
             if mol.hasBond(atom1, atom2):
-                bondList.append(mol.getBond(atom1, atom2))
+                bond_list.append(mol.getBond(atom1, atom2))
 
-    for bond in bondList:
+    for bond in bond_list:
         bond.order = 1.5
