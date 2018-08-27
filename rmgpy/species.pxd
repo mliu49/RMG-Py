@@ -57,7 +57,9 @@ cdef class Species:
     cdef str _inchi
 
     cpdef generate_resonance_structures(self, bint keep_isomorphic=?, bint filter_structures=?)
-    
+
+    cpdef bint is_same(self, other, bint isomorphism=?, bint strict=?, bint map_atom_ids=?, bint generate_res=?) except -2
+
     cpdef bint isIsomorphic(self, other, bint generate_res=?) except -2
 
     cpdef bint isIdentical(self, other) except -2

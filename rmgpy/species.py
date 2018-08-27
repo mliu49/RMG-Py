@@ -203,7 +203,76 @@ class Species(object):
                 self.molecule[0].assignAtomIDs()
             self.molecule = self.molecule[0].generate_resonance_structures(keep_isomorphic=keep_isomorphic,
                                                                            filter_structures=filter_structures)
-    
+
+    def is_same(self, other, isomorphism=True, strict=True, map_atom_ids=False, generate_res=False):
+        """
+        Compares `self` to `other` to determine if they are the same species.
+        A number of keyword arguments can be used to adjust the definition of
+        this comparison. By default, this method performs graph isomorphism.
+
+        Important keyword argument combinations:
+
+          - ``isomorphism=False``: InChI comparison
+          - ``isomorphism=True`` and ``strict=False``: isomorphism without considering electrons and bond orders
+          - ``isomorphism=True`` and ``strict=True``: normal graph isomorphism
+          - ``isomorphism=True`` and ``map_atom_ids=True``: previous isIdentical comparison
+
+        Args:
+            other: the other :class:`Species` or :class:`Molecule` object to compare with
+            isomorphism (bool, optional): whether or not to use graph isomorphism
+            strict (bool, optional): whether or not to consider electrons and bond orders, requires ``isomorphism=True``
+            map_atom_ids (bool, optional): generate initial map based on atom IDs, requires ``isomorphism=True``
+            generate_res (bool, optional): try regenerating resonance structures before isomorphism, requires ``isomorphism=True``
+
+        Returns:
+            ``True`` if self is the same as other, ``False`` otherwise
+        """
+        cython.declare(result=cython.bint)
+
+        if not isinstance(other, Molecule) and not isinstance(other, Species):
+            raise TypeError('Got a {0} object for parameter "other", when a Molecule or Species object is required.'.format(other.__class__))
+
+        # Quick comparison using InChI
+        result = self.multiplicity == other.multiplicity and self.fingerprint == other.fingerprint
+
+        if not result:
+            # If the result is false then they cannot be isomorphic
+            return result
+        elif not isomorphism:
+            # If isomorphism is not requested, return the result now
+            return self.InChI == other.InChI
+
+        # Otherwise, do the full isomorphism comparison as requested
+        if isinstance(other, Molecule):
+            for molecule in self.molecule:
+                if molecule.is_same(other, isomorphism=isomorphism, strict=strict, map_atom_ids=map_atom_ids):
+                    return True
+                elif not strict:
+                    # For non-strict isomorphism, resonance structures should be isomorphic, so there is no need to
+                    # continue checking the remaining structures for isomorphism
+                    return False
+        elif isinstance(other, Species):
+            for molecule1 in self.molecule:
+                for molecule2 in other.molecule:
+                    if molecule1.is_same(molecule2, isomorphism=isomorphism, strict=strict, map_atom_ids=map_atom_ids):
+                        return True
+                    elif not strict:
+                        return False
+            if generate_res:
+                other_copy = other.copy(deep=True)
+                other_copy.generate_resonance_structures(keep_isomorphic=False)
+                for molecule1 in self.molecule:
+                    for molecule2 in other_copy.molecule:
+                        if molecule1.isIsomorphic(molecule2):
+                            # If they are isomorphic and this was found only by generating resonance structures, append
+                            # the structure in other to self.molecule as unreactive, since it is a non-representative
+                            # resonance structure of it, and return `True`.
+                            other_copy.molecule[0].reactive = False
+                            self.molecule.append(other_copy.molecule[0])
+                            return True
+
+        return False
+
     def isIsomorphic(self, other, generate_res=False):
         """
         Return ``True`` if the species is isomorphic to `other`, which can be
