@@ -1222,6 +1222,92 @@ class Molecule(Graph):
 
         return element_count
 
+    def is_same(self, other, isomorphism=True, strict=True, map_atom_ids=False,
+                map_atom_labels=False, initial_map=None, verify_map=True,
+                save_order=False):
+        """
+        Compares `self` to `other` to determine if they are the same molecule.
+        A number of keyword arguments can be used to adjust the definition of
+        this comparison. By default, this method performs graph isomorphism.
+
+        Important keyword argument combinations:
+
+          - ``isomorphism=False``: InChI comparison
+          - ``isomorphism=True`` and ``strict=False``: isomorphism without considering electrons and bond orders
+          - ``isomorphism=True`` and ``strict=True``: normal graph isomorphism
+          - ``isomorphism=True`` and ``map_atom_ids=True``: previous isIdentical comparison
+
+        Args:
+            other (Graph): the other :class:`Graph` object to compare with
+            isomorphism (bool, optional): whether or not to use graph isomorphism
+            strict (bool, optional): whether or not to consider electrons and bond orders, requires ``isomorphism=True``
+            map_atom_ids (bool, optional): generate initial map based on atom IDs, requires ``isomorphism=True``
+            map_atom_labels (bool, optional): generate initial map based on atom labels, requires ``isomorphism=True``
+            initial_map (dict, optional): initial mapping of vertices between self and other, requires ``isomorphism=True``
+            verify_map (bool, optional): check that the mapping is valid, requires ``isomorphism=True``
+            save_order (bool, optional): whether or not to restore atom order after isomorphism, requires ``isomorphism=True``
+
+        Returns:
+            ``True`` if self is the same as other, ``False`` otherwise
+        """
+        cython.declare(result=cython.bint, atom_ids=set, other_ids=set,
+                       atom_list=list, other_list=list, atom=Atom, atom1=Atom, atom2=Atom)
+
+        if not isinstance(other, Molecule):
+            raise TypeError('Got a {0} object for parameter "other", when a Molecule object is required.'.format(other.__class__))
+        if map_atom_labels and map_atom_ids:
+            raise ValueError('Initial maps using atom labels or atom ids are mutually exclusive. Please choose one or the other.')
+        if map_atom_ids:
+            verify_map = True
+
+        # Quick comparison using InChI
+        result = self.multiplicity == other.multiplicity and self.fingerprint == other.fingerprint
+
+        if not result:
+            # If the result is false then they cannot be isomorphic
+            return result
+        elif not isomorphism:
+            # If isomorphism is not requested, return the result now
+            return self.InChI == other.InChI
+
+        # Check if an initial map is provided or needs to be generated
+        if initial_map is None:
+            if map_atom_labels:
+                initial_map = {}
+                for atom in self.atoms:
+                    if atom.label:
+                        initial_map[atom] = other.getLabeledAtom(atom.label)
+
+            elif map_atom_ids:
+                # Get a set of atom indices for each molecule
+                atom_ids = set([atom.id for atom in self.atoms])
+                other_ids = set([atom.id for atom in other.atoms])
+
+                if atom_ids == other_ids:
+                    # If the two molecules have the same indices, then they might be identical
+                    # Sort the atoms by ID
+                    atom_list = sorted(self.atoms, key=lambda x: x.id)
+                    other_list = sorted(other.atoms, key=lambda x: x.id)
+
+                    # If matching atom indices gives a valid mapping, then the molecules are fully identical
+                    initial_map = {}
+                    for atom1, atom2 in itertools.izip(atom_list, other_list):
+                        initial_map[atom1] = atom2
+                else:
+                    # The molecules don't have the same set of indices, so they are not identical
+                    result = False
+
+        # Verify initial map if needed
+        if initial_map is not None and verify_map:
+            result = self.isMappingValid(other, initial_map, equivalent=True)
+
+        # If we're comparing atom IDs, verifying the map is sufficient
+        # Otherwise, continue to the full isomorphism comparison
+        if not map_atom_ids:
+            result = Graph.isIsomorphic(self, other, initial_map, saveOrder=save_order, strict=strict)
+
+        return result
+
     def isIsomorphic(self, other, initialMap=None, saveOrder=False, strict=True):
         """
         Returns :data:`True` if two graphs are isomorphic and :data:`False`
