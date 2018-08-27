@@ -167,26 +167,31 @@ class Atom(Vertex):
     @property
     def bonds(self): return self.edges
 
-    def equivalent(self, other):
+    def equivalent(self, other, strict=True):
         """
         Return ``True`` if `other` is indistinguishable from this atom, or
         ``False`` otherwise. If `other` is an :class:`Atom` object, then all
         attributes except `label` and 'ID' must match exactly. If `other` is an
         :class:`GroupAtom` object, then the atom must match any of the
-        combinations in the atom pattern.
+        combinations in the atom pattern. If ``strict`` is ``False``, then only
+        the element is compared and electrons are ignored.
         """
         cython.declare(atom=Atom, ap=gr.GroupAtom)
         if isinstance(other, Atom):
             atom = other
-            return (
-                self.element                is atom.element and
-                self.radicalElectrons       == atom.radicalElectrons   and
-                self.lonePairs              == atom.lonePairs           and
-                self.charge                 == atom.charge and
-                self.atomType              is atom.atomType
-                )
+            if strict:
+                return (self.element          is atom.element
+                    and self.radicalElectrons == atom.radicalElectrons
+                    and self.lonePairs        == atom.lonePairs
+                    and self.charge           == atom.charge
+                    and self.atomType         is atom.atomType)
+            else:
+                return self.element is atom.element
         elif isinstance(other, gr.GroupAtom):
             cython.declare(a=AtomType, radical=cython.short, lp=cython.short, charge=cython.short)
+            if not strict:
+                raise NotImplementedError('There is currently no implementation of '
+                                          'the strict argument for Group objects.')
             ap = other
             for a in ap.atomType:
                 if self.atomType.equivalent(a): break
@@ -1217,7 +1222,7 @@ class Molecule(Graph):
 
         return element_count
 
-    def isIsomorphic(self, other, initialMap=None,saveOrder=False):
+    def isIsomorphic(self, other, initialMap=None, saveOrder=False, strict=True):
         """
         Returns :data:`True` if two graphs are isomorphic and :data:`False`
         otherwise. The `initialMap` attribute can be used to specify a required
@@ -1239,10 +1244,10 @@ class Molecule(Graph):
         if self.multiplicity != other.multiplicity:
             return False
         # Do the full isomorphism comparison
-        result = Graph.isIsomorphic(self, other, initialMap, saveOrder=saveOrder)
+        result = Graph.isIsomorphic(self, other, initialMap, saveOrder=saveOrder, strict=strict)
         return result
 
-    def findIsomorphism(self, other, initialMap=None, saveOrder=False):
+    def findIsomorphism(self, other, initialMap=None, saveOrder=False, strict=True):
         """
         Returns :data:`True` if `other` is isomorphic and :data:`False`
         otherwise, and the matching mapping. The `initialMap` attribute can be
@@ -1266,7 +1271,7 @@ class Molecule(Graph):
             return []
             
         # Do the isomorphism comparison
-        result = Graph.findIsomorphism(self, other, initialMap, saveOrder=saveOrder)
+        result = Graph.findIsomorphism(self, other, initialMap, saveOrder=saveOrder, strict=strict)
         return result
 
     def isSubgraphIsomorphic(self, other, initialMap=None, generateInitialMap=False,saveOrder=False):
