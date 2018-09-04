@@ -41,9 +41,10 @@ cdef class VF2:
     An implementation of the second version of the Vento-Foggia (VF2) algorithm
     for graph and subgraph isomorphism.
     """
-    def __init__(self, graphA = None, graphB = None):
+    def __init__(self, graphA=None, graphB=None, strict=True):
         self.graph1 = graphA
         self.graph2 = graphB
+        self.strict = strict
 
     @property
     def graphA(self):
