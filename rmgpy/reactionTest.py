@@ -63,6 +63,8 @@ class PseudoSpecies:
         return "PseudoSpecies('{0}')".format(self.label)
     def __str__(self):
         return self.label
+    def is_same(self, other):
+        return self.label.lower() == other.label.lower()
     def isIsomorphic(self, other):
         return self.label.lower() == other.label.lower()
 
