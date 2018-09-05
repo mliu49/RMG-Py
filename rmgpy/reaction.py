@@ -414,6 +414,71 @@ class Reaction:
         else:
             return False
 
+    def is_same(self, other, either_direction=True, only_check_label=False,
+                isomorphism=True, strict=True, map_atom_ids=False,
+                generate_res=False, check_template_rxn_products=False):
+        """
+        Compares this reaction against `other` to determine whether they are
+        the same based on the provided options. Currently, this method can
+        only compare based on the reactants and products, and does not use any
+        kinetic information.
+
+        Args:
+            other (Reaction): :class:`Reaction` object to compare against
+            either_direction (bool, optional): if ``False``, then direction must match
+            only_check_label (bool, optional): if ``True``, only compares species labels
+            isomorphism (bool, optional): whether or not to use graph isomorphism
+            strict (bool, optional): whether or not to consider electrons and bond orders, requires ``isomorphism=True``
+            map_atom_ids (bool, optional): generate initial map based on atom IDs, requires ``isomorphism=True``
+            generate_res (bool, optional): try regenerating resonance structures before isomorphism, requires ``isomorphism=True``
+            check_template_rxn_products (bool, optional): for template reactions, only check reaction products
+
+        Returns:
+            ``True`` if this reaction is the same as the `other` reaction,
+            or ``False if they are different.
+        """
+        if check_template_rxn_products:
+            try:
+                species1 = self.products if self.is_forward else self.reactants
+                species2 = other.products if other.is_forward else other.reactants
+            except AttributeError:
+                raise TypeError('Only use checkTemplateRxnProducts flag for TemplateReactions.')
+
+            return same_species_lists(species1, species2, only_check_label=only_check_label, isomorphism=isomorphism,
+                                      strict=strict, map_atom_ids=map_atom_ids, generate_res=generate_res)
+
+        # Compare reactants to reactants
+        forwardReactantsMatch = same_species_lists(self.reactants, other.reactants, only_check_label=only_check_label,
+                                                   isomorphism=isomorphism, strict=strict, map_atom_ids=map_atom_ids,
+                                                   generate_res=generate_res)
+
+        # Compare products to products
+        forwardProductsMatch = same_species_lists(self.products, other.products, only_check_label=only_check_label,
+                                                  isomorphism=isomorphism, strict=strict, map_atom_ids=map_atom_ids,
+                                                  generate_res=generate_res)
+
+        # Compare specificCollider to specificCollider
+        ColliderMatch = (self.specificCollider == other.specificCollider)
+
+        # Return now, if we can
+        if forwardReactantsMatch and forwardProductsMatch and ColliderMatch:
+            return True
+        if not either_direction:
+            return False
+
+        # Compare reactants to products
+        reverseReactantsMatch = same_species_lists(self.reactants, other.products, only_check_label=only_check_label,
+                                                   isomorphism=isomorphism, strict=strict, map_atom_ids=map_atom_ids,
+                                                   generate_res=generate_res)
+
+        # Compare products to reactants
+        reverseProductsMatch = same_species_lists(self.products, other.reactants, only_check_label=only_check_label,
+                                                  isomorphism=isomorphism, strict=strict, map_atom_ids=map_atom_ids,
+                                                  generate_res=generate_res)
+
+        # should have already returned if it matches forwards, or we're not allowed to match backwards
+        return reverseReactantsMatch and reverseProductsMatch and ColliderMatch
+
     def isIsomorphic(self, other, eitherDirection=True, checkIdentical = False,
                      checkOnlyLabel = False, checkTemplateRxnProducts=False):
         """

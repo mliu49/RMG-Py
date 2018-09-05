@@ -69,6 +69,9 @@ cdef class Reaction:
     
     cpdef bint matchesSpecies(self, list reactants, list products=?)
 
+    cpdef bint is_same(self, Reaction other, bint either_direction=?, bint only_check_label=?, bint isomorphism=?,
+                       bint strict=?, bint map_atom_ids=?, bint generate_res=?, bint check_template_rxn_products=?) except -2
+
     cpdef bint isIsomorphic(self, Reaction other, bint eitherDirection=?, bint checkIdentical=?, bint checkOnlyLabel=?, bint checkTemplateRxnProducts=?)
 
     cpdef double getEnthalpyOfReaction(self, double T)
