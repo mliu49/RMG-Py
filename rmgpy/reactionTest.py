@@ -50,7 +50,7 @@ import rmgpy.constants as constants
 
 ################################################################################
 
-class PseudoSpecies:
+class PseudoSpecies(Species):
     """
     Can be used in place of a :class:`rmg.species.Species` for isomorphism checks.
     
@@ -63,9 +63,9 @@ class PseudoSpecies:
         return "PseudoSpecies('{0}')".format(self.label)
     def __str__(self):
         return self.label
-    def is_same(self, other):
+    def is_same(self, other, **kwargs):
         return self.label.lower() == other.label.lower()
-    def isIsomorphic(self, other):
+    def isIsomorphic(self, other, **kwargs):
         return self.label.lower() == other.label.lower()
 
 class TestReactionIsomorphism(unittest.TestCase):
