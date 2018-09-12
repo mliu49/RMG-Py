@@ -776,7 +776,7 @@ class Molecule(Graph):
         elif self is other: return True #same reference in memory
         elif self.fingerprint != other.fingerprint: return False
         else:
-            return self.isIsomorphic(other)   
+            return self.is_same(other)
 
     def __str__(self):
         """

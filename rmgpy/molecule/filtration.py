@@ -399,7 +399,7 @@ def mark_unreactive_structures(filtered_list, mol_list):
     # Important whenever Species.molecule[0] is expected to be used (e.g., training reactions) after generating
     # resonance structures. However, if it was filtered out, it should be appended to the end of the list.
     for index, filtered in enumerate(filtered_list):
-        if filtered.copy(deep=True).isIsomorphic(mol_list[0].copy(deep=True)):
+        if filtered.copy(deep=True).is_same(mol_list[0].copy(deep=True)):
             filtered_list.insert(0, filtered_list.pop(index))
             break
     else:

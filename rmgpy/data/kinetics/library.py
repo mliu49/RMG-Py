@@ -276,7 +276,7 @@ class KineticsLibrary(Database):
                 # This means that if we find any duplicate reactions, it is an error
                 for entry in self.entries.values():
                     reaction = entry.item
-                    if reaction0 is not reaction and reaction0.isIsomorphic(reaction): 
+                    if reaction0 is not reaction and reaction0.is_same(reaction):
                         # We found a duplicate reaction that wasn't marked!
                         # RMG requires all duplicate reactions to be marked, unlike CHEMKIN
                         if markDuplicates:
@@ -305,7 +305,7 @@ class KineticsLibrary(Database):
                 reaction = entry.item
                 if reaction0 is reaction:
                     continue
-                if reaction0.isIsomorphic(reaction, eitherDirection=False):
+                if reaction0.is_same(reaction, either_direction=False):
                     if reaction0.reversible != reaction.reversible:
                         logging.debug("Reactions isomorphic but with different reversibilities.")
                         continue
@@ -619,7 +619,7 @@ class KineticsLibrary(Database):
                         found = False
                         for species in speciesDict.values():
                             for mol in species.molecule:
-                                if mol.isIsomorphic(molecule):
+                                if mol.is_same(molecule):
                                     found = True
                                     break
                         if not found:

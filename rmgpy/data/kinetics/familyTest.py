@@ -139,7 +139,7 @@ multiplicity 2
         products = family.applyRecipe(reactants)
 
         self.assertEqual(len(products), 1)
-        self.assertTrue(expectedProduct.isIsomorphic(products[0]))
+        self.assertTrue(expectedProduct.is_same(products[0]))
 
     def testReactBenzeneBond2(self):
         """
@@ -204,7 +204,7 @@ multiplicity 2
         products = family.applyRecipe(reactants)
 
         self.assertEqual(len(products), 1)
-        self.assertTrue(expectedProduct.isIsomorphic(products[0]))
+        self.assertTrue(expectedProduct.is_same(products[0]))
 
     def test_intra_H_migration(self):
         """
@@ -267,7 +267,7 @@ multiplicity 2
         for label, atom in expectedProduct.getLabeledAtoms().iteritems():
             mapping[atom] = products[0].getLabeledAtom(label)
 
-        self.assertTrue(expectedProduct.isIsomorphic(products[0], mapping))
+        self.assertTrue(expectedProduct.is_same(products[0], initial_map=mapping))
 
     def test_H_Abstraction(self):
         """
@@ -308,13 +308,13 @@ multiplicity 2
         for label, atom in expectedProducts[0].getLabeledAtoms().iteritems():
             mapping1[atom] = products[0].getLabeledAtom(label)
 
-        self.assertTrue(expectedProducts[0].isIsomorphic(products[0], mapping1))
+        self.assertTrue(expectedProducts[0].is_same(products[0], initial_map=mapping1))
 
         mapping2 = {}
         for label, atom in expectedProducts[1].getLabeledAtoms().iteritems():
             mapping2[atom] = products[1].getLabeledAtom(label)
 
-        self.assertTrue(expectedProducts[1].isIsomorphic(products[1], mapping2))
+        self.assertTrue(expectedProducts[1].is_same(products[1], initial_map=mapping2))
 
     def test_Intra_ene_reaction(self):
         """
@@ -367,7 +367,7 @@ multiplicity 2
         for label, atom in expectedProduct.getLabeledAtoms().iteritems():
             mapping[atom] = products[0].getLabeledAtom(label)
 
-        self.assertTrue(expectedProduct.isIsomorphic(products[0], mapping))
+        self.assertTrue(expectedProduct.is_same(products[0], initial_map=mapping))
 
     def test_6_membered_central_CC_shift(self):
         """
@@ -410,7 +410,7 @@ multiplicity 2
         for label, atom in expectedProduct.getLabeledAtoms().iteritems():
             mapping[atom] = products[0].getLabeledAtom(label)
 
-        self.assertTrue(expectedProduct.isIsomorphic(products[0], mapping))
+        self.assertTrue(expectedProduct.is_same(products[0], initial_map=mapping))
 
     def test_12_shiftC(self):
         """
@@ -463,7 +463,7 @@ multiplicity 2
         for label, atom in expectedProduct.getLabeledAtoms().iteritems():
             mapping[atom] = products[0].getLabeledAtom(label)
 
-        self.assertTrue(expectedProduct.isIsomorphic(products[0], mapping))
+        self.assertTrue(expectedProduct.is_same(products[0], initial_map=mapping))
 
     def test_Intra_R_Add_Exo_scission(self):
         """
@@ -522,7 +522,7 @@ multiplicity 2
         for label, atom in expectedProduct.getLabeledAtoms().iteritems():
             mapping[atom] = products[0].getLabeledAtom(label)
 
-        self.assertTrue(expectedProduct.isIsomorphic(products[0], mapping))
+        self.assertTrue(expectedProduct.is_same(products[0], initial_map=mapping))
 
     def test_intra_substitutionS_isomerization(self):
         """
@@ -565,7 +565,7 @@ multiplicity 2
         for label, atom in expectedProduct.getLabeledAtoms().iteritems():
             mapping[atom] = products[0].getLabeledAtom(label)
 
-        self.assertTrue(expectedProduct.isIsomorphic(products[0], mapping))
+        self.assertTrue(expectedProduct.is_same(products[0], initial_map=mapping))
 
     def test_r_addition_com(self):
             """
@@ -614,7 +614,7 @@ multiplicity 2
             products = family.applyRecipe(reactants)
 
             self.assertEqual(len(products), 1)
-            self.assertTrue(expected_products[0].isIsomorphic(products[0]))
+            self.assertTrue(expected_products[0].is_same(products[0]))
 
 
     def testSaveFamily(self):
@@ -861,14 +861,14 @@ multiplicity 2
             for label, atom in expected_reactants[i].getLabeledAtoms().iteritems():
                 mapping[atom] = reactant.molecule[0].getLabeledAtom(label)
 
-            self.assertTrue(expected_reactants[i].isIsomorphic(reactant.molecule[0], mapping))
+            self.assertTrue(expected_reactants[i].is_same(reactant.molecule[0], initial_map=mapping))
 
         for i, product in enumerate(reaction.products):
             mapping = {}
             for label, atom in expected_products[i].getLabeledAtoms().iteritems():
                 mapping[atom] = product.molecule[0].getLabeledAtom(label)
 
-            self.assertTrue(expected_products[i].isIsomorphic(product.molecule[0], mapping))
+            self.assertTrue(expected_products[i].is_same(product.molecule[0], initial_map=mapping))
 
     def test_irreversible_reaction(self):
         """Test that the Singlet_Val6_to_triplet and 1,2-Birad_to_alkene families generate irreversible reactions."""

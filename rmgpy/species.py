@@ -264,7 +264,7 @@ class Species(object):
                 other_copy.generate_resonance_structures(keep_isomorphic=False)
                 for molecule1 in self.molecule:
                     for molecule2 in other_copy.molecule:
-                        if molecule1.isIsomorphic(molecule2):
+                        if molecule1.is_same(molecule2):
                             # If they are isomorphic and this was found only by generating resonance structures, append
                             # the structure in other to self.molecule as unreactive, since it is a non-representative
                             # resonance structure of it, and return `True`.
@@ -338,7 +338,7 @@ class Species(object):
         """
         for species in species_list:
             if isinstance(species, Species):
-                return self.isIsomorphic(species)
+                return self.is_same(species)
             else:
                 raise TypeError('Unexpected value "{0!r}" for species_list parameter;'
                                  ' should be a List of Species objects.'.format(species))

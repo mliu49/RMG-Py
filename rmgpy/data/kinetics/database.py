@@ -470,7 +470,7 @@ and immediately used in input files without any additional changes.
             if reactants[0] is reactants[1]:
                 reactants[1] = reactants[1].copy(deep=True)
                 same_reactants = 2
-            elif reactants[0].isIsomorphic(reactants[1]):
+            elif reactants[0].is_same(reactants[1]):
                 same_reactants = 2
         elif len(reactants) == 3:
             same_01 = reactants[0] is reactants[1]
@@ -489,13 +489,13 @@ and immediately used in input files without any additional changes.
                 same_reactants = 2
                 reactants[2] = reactants[2].copy(deep=True)
             else:
-                same_01 = reactants[0].isIsomorphic(reactants[1])
-                same_02 = reactants[0].isIsomorphic(reactants[2])
+                same_01 = reactants[0].is_same(reactants[1])
+                same_02 = reactants[0].is_same(reactants[2])
                 if same_01 and same_02:
                     same_reactants = 3
                 elif same_01 or same_02:
                     same_reactants = 2
-                elif reactants[1].isIsomorphic(reactants[2]):
+                elif reactants[1].is_same(reactants[2]):
                     same_reactants = 2
 
         # Label reactant atoms for proper degeneracy calculation (cannot be in tuple)

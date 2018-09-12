@@ -759,7 +759,7 @@ def loadSpeciesDictionary(path):
                 species.generate_resonance_structures()
                 label = species.label
                 for inert in inerts:
-                    if inert.isIsomorphic(species):
+                    if inert.is_same(species):
                         species.reactive = False
                         break
                 speciesDict[label] = species
@@ -777,7 +777,7 @@ def loadSpeciesDictionary(path):
                 species.generate_resonance_structures()
                 label = species.label
                 for inert in inerts:
-                    if inert.isIsomorphic(species):
+                    if inert.is_same(species):
                         species.reactive = False
                         break
                 speciesDict[label] = species
@@ -1692,7 +1692,7 @@ def writeKineticsEntry(reaction, speciesList, verbose = True, javaLibrary = Fals
         # Write collider efficiencies
         for collider, efficiency in sorted(kinetics.efficiencies.items(), key=lambda item: id(item[0])):
             for species in speciesList:
-                if any([collider.isIsomorphic(molecule) for molecule in species.molecule]):
+                if any([collider.is_same(molecule) for molecule in species.molecule]):
                     string += '{0!s}/{1:<4.2f}/ '.format(getSpeciesIdentifier(species), efficiency)
                     break
         string += '\n'

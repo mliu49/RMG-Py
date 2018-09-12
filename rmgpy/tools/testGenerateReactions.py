@@ -79,7 +79,7 @@ class GenerateReactionsTest(unittest.TestCase):
 
         count = 0
         for reaction in rmg.reactionModel.core.reactions:
-            if reaction.isIsomorphic(rxn_flagged):
+            if reaction.is_same(rxn_flagged):
                 count += 1
 
         self.assertEquals(count, 1)
@@ -115,7 +115,7 @@ class GenerateReactionsTest(unittest.TestCase):
 
         count = 0
         for reaction in rmg.reactionModel.core.reactions:
-            if reaction.isIsomorphic(rxn_flagged):
+            if reaction.is_same(rxn_flagged):
                 count += 1
 
         self.assertEquals(count, 1)

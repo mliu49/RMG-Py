@@ -76,7 +76,7 @@ def compareModelKinetics(model1, model2):
     commonReactions = {}
     for rxn1 in model1.reactions:
         for rxn2 in model2.reactions:
-            if rxn1.isIsomorphic(rxn2):
+            if rxn1.is_same(rxn2):
                 commonReactions[rxn1] = rxn2
                 model2.reactions.remove(rxn2)
                 break
@@ -99,7 +99,7 @@ def compareModelKinetics(model1, model2):
     kinetics1 = []; kinetics2 = []
     for rxn1, rxn2 in commonReactions.iteritems():
         kinetics1.append(rxn1.getRateCoefficient(T,P))
-        if rxn1.isIsomorphic(rxn2, eitherDirection=False):
+        if rxn1.is_same(rxn2, either_direction=False):
             kinetics2.append(rxn2.getRateCoefficient(T,P))
         else:
             kinetics2.append(rxn2.getRateCoefficient(T,P) / rxn2.getEquilibriumConstant(T))
@@ -142,7 +142,7 @@ def compareModelSpecies(model1, model2):
     
     for spec2 in model2.species:
         for spec1 in uniqueSpecies1[:]: # make a copy so you don't remove from the list you are iterating over
-            if spec1.isIsomorphic(spec2):
+            if spec1.is_same(spec2):
                 commonSpecies.append([spec1, spec2])
                 uniqueSpecies1.remove(spec1)
                 break
@@ -184,7 +184,7 @@ def compareModelReactions(model1, model2):
     commonReactions = []; uniqueReactions1 = []; uniqueReactions2 = []
     for rxn1 in reactionList1:
         for rxn2 in reactionList2[:]: # make a copy so you don't remove from the list you are iterating over
-            if rxn1.isIsomorphic(rxn2):
+            if rxn1.is_same(rxn2):
                 commonReactions.append([rxn1, rxn2])
                 # Remove reaction 2 from being chosen a second time.
                 # Let each reaction only appear only once in the diff comparison.

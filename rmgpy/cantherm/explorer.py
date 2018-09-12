@@ -137,7 +137,7 @@ class ExplorerJob(object):
         
         for spc in reaction_model.core.species:
             for i,item in enumerate(self.source):
-                if spc.isIsomorphic(item):
+                if spc.is_same(item):
                     self.source[i] = spc
         
         #react initial species

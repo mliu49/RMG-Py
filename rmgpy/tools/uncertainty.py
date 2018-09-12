@@ -341,7 +341,7 @@ class Uncertainty:
         saturatedStruct = molecule.copy(deep=True)
         saturatedStruct.saturate_radicals()
         for otherSpecies in self.speciesList:
-            if otherSpecies.isIsomorphic(saturatedStruct):
+            if otherSpecies.is_same(saturatedStruct):
                 return otherSpecies, False
         
         #couldn't find saturated species in the model, try libraries

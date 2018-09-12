@@ -521,7 +521,7 @@ def getRMGSpeciesFromUserSpecies(userList, RMGList):
         userSpecies.generate_resonance_structures()
 
         for rmgSpecies in RMGList:
-            if userSpecies.isIsomorphic(rmgSpecies):
+            if userSpecies.is_same(rmgSpecies):
                 if userSpecies in mapping:
                     raise KeyError("The Species with SMIlES {0} has appeared twice in the species list!".format(userSpecies.molecule[0].toSMILES()))
                 mapping[userSpecies] = rmgSpecies

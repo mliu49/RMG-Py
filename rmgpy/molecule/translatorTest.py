@@ -796,12 +796,12 @@ class ParsingTest(unittest.TestCase):
         aug_inchi = 'InChI=1S/CH4/h1H4'
         mol = fromAugmentedInChI(Molecule(), aug_inchi)
         self.assertTrue(not mol.InChI == '')
-        self.assertTrue(mol.isIsomorphic(self.methane))
+        self.assertTrue(mol.is_same(self.methane))
 
         aug_inchi = 'InChI=1/CH4/h1H4'
         mol = fromAugmentedInChI(Molecule(), aug_inchi)
         self.assertTrue(not mol.InChI == '')
-        self.assertTrue(mol.isIsomorphic(self.methane))
+        self.assertTrue(mol.is_same(self.methane))
 
     def compare(self, adjlist, smiles):
         """
@@ -811,13 +811,13 @@ class ParsingTest(unittest.TestCase):
         """
         mol1 = Molecule().fromAdjacencyList(adjlist)
         mol2 = Molecule(SMILES=smiles)
-        self.assertTrue(mol1.isIsomorphic(mol2),
+        self.assertTrue(mol1.is_same(mol2),
                         "Parsing SMILES={!r} gave unexpected molecule\n{}".format(smiles, mol2.toAdjacencyList()))
 
     def test_fromSMILES(self):
         smiles = 'C'
         mol = fromSMILES(Molecule(), smiles)
-        self.assertTrue(mol.isIsomorphic(self.methane))
+        self.assertTrue(mol.is_same(self.methane))
 
         # Test that atomtypes that rely on lone pairs for identity are typed correctly
         smiles = 'CN'
@@ -1061,7 +1061,7 @@ class ParsingTest(unittest.TestCase):
     def test_fromInChI(self):
         inchi = 'InChI=1S/CH4/h1H4'
         mol = fromInChI(Molecule(), inchi)
-        self.assertTrue(mol.isIsomorphic(self.methane))
+        self.assertTrue(mol.is_same(self.methane))
         # Test that atomtypes that rely on lone pairs for identity are typed correctly
         inchi = "InChI=1S/CH5N/c1-2/h2H2,1H3"
         mol = fromInChI(Molecule(), inchi)
@@ -1071,7 +1071,7 @@ class ParsingTest(unittest.TestCase):
     def test_fromSMARTS(self):
         smarts = '[CH4]'
         mol = fromSMARTS(Molecule(), smarts)
-        self.assertTrue(mol.isIsomorphic(self.methane))
+        self.assertTrue(mol.is_same(self.methane))
 
     def test_incorrect_identifier_type(self):
         """Test that the appropriate error is raised for identifier/type mismatch."""
@@ -1251,7 +1251,7 @@ class InChIParsingTest(unittest.TestCase):
         spc = Species(molecule=[Molecule().fromAdjacencyList(adjlist)])
         aug_inchi = spc.getAugmentedInChI()
 
-        self.assertEqual(Species(molecule=[Molecule().fromAugmentedInChI(aug_inchi)]).isIsomorphic(spc), True)
+        self.assertEqual(Species(molecule=[Molecule().fromAugmentedInChI(aug_inchi)]).is_same(spc), True)
 
     def test_CCCO_triplet(self):
 
@@ -1272,7 +1272,7 @@ class InChIParsingTest(unittest.TestCase):
         spc.generate_resonance_structures()
         aug_inchi = spc.getAugmentedInChI()
 
-        self.assertEqual(Species(molecule=[Molecule().fromAugmentedInChI(aug_inchi)]).isIsomorphic(spc), True)
+        self.assertEqual(Species(molecule=[Molecule().fromAugmentedInChI(aug_inchi)]).is_same(spc), True)
 
     def testC3H4(self):
         inchi = 'C3H4/c1-3-2/h1,3H,2H2'

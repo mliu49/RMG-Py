@@ -1247,7 +1247,7 @@ class TestGroup(unittest.TestCase):
             """
             group = Group().fromAdjacencyList(adjlist)
             result = group.makeSampleMolecule()
-            return (result.isIsomorphic(Molecule().fromSMILES(answer_smiles)))
+            return (result.is_same(Molecule().fromSMILES(answer_smiles)))
 ########################################################################################################################
         #tests adding implicit atoms
         adjlist = """
@@ -1266,7 +1266,7 @@ class TestGroup(unittest.TestCase):
         result2 = group2.makeSampleMolecule()
         naphthaleneMolecule = Molecule().fromSMILES('C1=CC=C2C=CC=CC2=C1')
         resonanceList2=naphthaleneMolecule.generate_resonance_structures()
-        self.assertTrue(any([result2.isIsomorphic(x) for x in resonanceList2]))
+        self.assertTrue(any([result2.is_same(x) for x in resonanceList2]))
 
         #test the creation of a positively charged species
         adjlist = """

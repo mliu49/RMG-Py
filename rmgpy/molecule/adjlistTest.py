@@ -461,7 +461,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
 """
         mol_2S = Molecule().fromAdjacencyList(adjlist_2S)
         mol_2S_new = Molecule().fromAdjacencyList(adjlist_2S_new)
-        self.assertTrue(mol_2S.isIsomorphic(mol_2S_new))
+        self.assertTrue(mol_2S.is_same(mol_2S_new))
         
         adjlist_2T = """
 1 C 2T 0 {2,S} {3,S}
@@ -475,7 +475,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
 """
         mol_2T = Molecule().fromAdjacencyList(adjlist_2T)
         mol_2T_new = Molecule().fromAdjacencyList(adjlist_2T_new)
-        self.assertTrue(mol_2T.isIsomorphic(mol_2T_new))
+        self.assertTrue(mol_2T.is_same(mol_2T_new))
 
         adjlist_3D = """
 1 C 3D 0 {2,S}
@@ -487,7 +487,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
 """
         mol_3D = Molecule().fromAdjacencyList(adjlist_3D)
         mol_3D_new = Molecule().fromAdjacencyList(adjlist_3D_new)
-        self.assertTrue(mol_3D.isIsomorphic(mol_3D_new))
+        self.assertTrue(mol_3D.is_same(mol_3D_new))
 
         adjlist_3Q = """
 1 N 3Q 1
@@ -497,7 +497,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
 """
         mol_3Q = Molecule().fromAdjacencyList(adjlist_3Q)
         mol_3Q_new = Molecule().fromAdjacencyList(adjlist_3Q_new)
-        self.assertTrue(mol_3Q.isIsomorphic(mol_3Q_new))
+        self.assertTrue(mol_3Q.is_same(mol_3Q_new))
         
         adjlist_4S = """
 1 C 4S 0
@@ -507,7 +507,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
 """
         mol_4S = Molecule().fromAdjacencyList(adjlist_4S)
         mol_4S_new = Molecule().fromAdjacencyList(adjlist_4S_new)
-        self.assertTrue(mol_4S.isIsomorphic(mol_4S_new))
+        self.assertTrue(mol_4S.is_same(mol_4S_new))
         
         adjlist_4T = """
 1 C 4T 0
@@ -517,7 +517,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
 """
         mol_4T = Molecule().fromAdjacencyList(adjlist_4T)
         mol_4T_new = Molecule().fromAdjacencyList(adjlist_4T_new)
-        self.assertTrue(mol_4T.isIsomorphic(mol_4T_new))
+        self.assertTrue(mol_4T.is_same(mol_4T_new))
         
         adjlist_4V = """
 1 C 4V 0
@@ -527,7 +527,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
 """
         mol_4V = Molecule().fromAdjacencyList(adjlist_4V)
         mol_4V_new = Molecule().fromAdjacencyList(adjlist_4V_new)
-        self.assertTrue(mol_4V.isIsomorphic(mol_4V_new))
+        self.assertTrue(mol_4V.is_same(mol_4V_new))
         
     def testWildcardAdjlists(self):
         """
@@ -575,10 +575,10 @@ class TestMoleculeAdjLists(unittest.TestCase):
         mol_intermediate = Molecule().fromAdjacencyList(adjlist_intermediate)
         
         # Isomorphic check
-        self.assertTrue(mol_smiles.isIsomorphic(mol))
-        self.assertTrue(mol_smiles.isIsomorphic(mol_inchi))
-        self.assertTrue(mol_smiles.isIsomorphic(mol_old))
-        self.assertTrue(mol_smiles.isIsomorphic(mol_intermediate))
+        self.assertTrue(mol_smiles.is_same(mol))
+        self.assertTrue(mol_smiles.is_same(mol_inchi))
+        self.assertTrue(mol_smiles.is_same(mol_old))
+        self.assertTrue(mol_smiles.is_same(mol_intermediate))
         
         # Adjlist check
         self.assertEqual(mol_smiles.toAdjacencyList().strip(), adjlist)
@@ -616,7 +616,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
         adjlist_1 = molecule.toAdjacencyList(removeH=False)
         self.assertEqual(adjlist_1,molecule2.toAdjacencyList())
         newMolecule = Molecule().fromAdjacencyList(adjlist_1)
-        self.assertTrue(molecule.isIsomorphic(newMolecule))
+        self.assertTrue(molecule.is_same(newMolecule))
         
     def testToAdjacencyListForNonIntegerBonds(self):
         """
@@ -691,7 +691,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
         """
         molecule = Molecule().fromAdjacencyList(adjlist)  
         molecule_new = Molecule().fromAdjacencyList(adjlist_new)
-        self.assertTrue(molecule.isIsomorphic(molecule_new))
+        self.assertTrue(molecule.is_same(molecule_new))
         
     def testFromOldAdjacencyList3(self):
         """
@@ -709,7 +709,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
         """
         molecule = Molecule().fromAdjacencyList(adjlist)  
         molecule_new = Molecule().fromAdjacencyList(adjlist_new)
-        self.assertTrue(molecule.isIsomorphic(molecule_new))
+        self.assertTrue(molecule.is_same(molecule_new))
         
     def testFromOldAdjacencyList4(self):
         """
@@ -723,7 +723,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
         """
         molecule = Molecule().fromAdjacencyList(adjlist)  
         molecule_new = Molecule().fromAdjacencyList(adjlist_new)
-        self.assertTrue(molecule.isIsomorphic(molecule_new))
+        self.assertTrue(molecule.is_same(molecule_new))
     
     @work_in_progress
     def testFromOldAdjacencyList5(self):
@@ -740,7 +740,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
         """
         molecule = Molecule().fromAdjacencyList(adjlist)  
         molecule_new = Molecule().fromAdjacencyList(adjlist_new)
-        self.assertTrue(molecule.isIsomorphic(molecule_new))    
+        self.assertTrue(molecule.is_same(molecule_new))
         # Currently the fromOldAdjacencyList cannot correctly interpret CO written in this old form
         # (I don't think any adjlists are actually formed this way.)  
         # Currently 'adjlist' will fail when the Molecule is determined to be non-neurtral in net charge.
@@ -757,7 +757,7 @@ class TestMoleculeAdjLists(unittest.TestCase):
         """
         molecule = Molecule().fromAdjacencyList(adjlist)
         molecule_new = Molecule().fromAdjacencyList(adjlist_new)
-        self.assertTrue(molecule.isIsomorphic(molecule_new))
+        self.assertTrue(molecule.is_same(molecule_new))
         
     def testAdjacencyList(self):
         """
@@ -781,8 +781,8 @@ class TestMoleculeAdjLists(unittest.TestCase):
         15 H u0 {6,S}
         """)
         molecule2 = Molecule().fromSMILES('C=CC=C[CH]C')
-        self.assertTrue(molecule1.isIsomorphic(molecule2))
-        self.assertTrue(molecule2.isIsomorphic(molecule1))
+        self.assertTrue(molecule1.is_same(molecule2))
+        self.assertTrue(molecule2.is_same(molecule1))
 
         #Test that charges are correctly stored and written with adjacency lists
         adjlist3 = """

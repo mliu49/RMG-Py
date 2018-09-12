@@ -316,18 +316,18 @@ class CanTherm:
         for rxn in reactionList:
             for i,rspc in enumerate(rxn.reactants):
                 for spc in speciesList:
-                    if spc.isIsomorphic(rspc):
+                    if spc.is_same(rspc):
                         rxn.reactants[i] = spc
                         break
             for i,rspc in enumerate(rxn.products):
                 for spc in speciesList:
-                    if spc.isIsomorphic(rspc):
+                    if spc.is_same(rspc):
                         rxn.products[i] = spc
                         break
         del_inds = []
         for i,spc1 in enumerate(speciesList):
             for j,spc2 in enumerate(speciesList):
-                if j>i and spc1.isIsomorphic(spc2):
+                if j>i and spc1.is_same(spc2):
                     del_inds.append(j)
         
         for j in sorted(del_inds)[::-1]:

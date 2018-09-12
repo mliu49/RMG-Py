@@ -93,7 +93,7 @@ class TestSpecies(unittest.TestCase):
         self.assertEqual(self.species.getThermoData().H298.units, species.getThermoData().H298.units)
         self.assertEqual(len(self.species.conformer.modes), len(species.conformer.modes))
         self.assertEqual(len(self.species.molecule), len(species.molecule))
-        self.assertTrue(self.species.molecule[0].isIsomorphic(species.molecule[0]))
+        self.assertTrue(self.species.molecule[0].is_same(species.molecule[0]))
         self.assertEqual(self.species.conformer.E0.value_si, species.conformer.E0.value_si)
         self.assertEqual(self.species.conformer.E0.units, species.conformer.E0.units)
         self.assertEqual(self.species.transportData.sigma.value_si, species.transportData.sigma.value_si)
@@ -119,7 +119,7 @@ class TestSpecies(unittest.TestCase):
         self.assertEqual(self.species.getThermoData().H298.units, species.getThermoData().H298.units)
         self.assertEqual(len(self.species.conformer.modes), len(species.conformer.modes))
         self.assertEqual(len(self.species.molecule), len(species.molecule))
-        self.assertTrue(self.species.molecule[0].isIsomorphic(species.molecule[0]))
+        self.assertTrue(self.species.molecule[0].is_same(species.molecule[0]))
         self.assertEqual(self.species.conformer.E0.value_si, species.conformer.E0.value_si)
         self.assertEqual(self.species.conformer.E0.units, species.conformer.E0.units)
         self.assertEqual(self.species.transportData.sigma.value_si, species.transportData.sigma.value_si)
@@ -174,7 +174,7 @@ class TestSpecies(unittest.TestCase):
         exec('spec2 = {0!r}'.format(spec))
         self.assertEqual(len(spec.molecule), len(spec2.molecule))
         for i, j in zip(spec.molecule, spec2.molecule):
-            self.assertTrue(j.isIsomorphic(i), msg='i is not isomorphic with j, where i is {} and j is {}'.format(i.toSMILES(), j.toSMILES()))
+            self.assertTrue(j.is_same(i), msg='i is not isomorphic with j, where i is {} and j is {}'.format(i.toSMILES(), j.toSMILES()))
 
     def test_is_isomorphic_to_filtered_resonance_structure(self):
         """
@@ -226,15 +226,15 @@ class TestSpecies(unittest.TestCase):
                                                                 5 O u0 p3 c-1 {3,S}""")
 
         # check that the structures are not isomorphic if resonance structures are not generated:
-        self.assertFalse(spc1_correct.isIsomorphic(spc1_nonrepresentative, generate_res=False))
+        self.assertFalse(spc1_correct.is_same(spc1_nonrepresentative, generate_res=False))
 
         # check that the nonrepresentative structure is isomorphic by generating resonance structures:
-        self.assertTrue(spc1_correct.isIsomorphic(spc1_nonrepresentative, generate_res=True))
-        self.assertTrue(spc2_correct.isIsomorphic(spc2_nonrepresentative, generate_res=True))
-        self.assertTrue(spc3_correct.isIsomorphic(spc3_nonrepresentative, generate_res=True))
-        self.assertTrue(spc4_correct.isIsomorphic(spc4_nonrepresentative, generate_res=True))
-        self.assertTrue(spc5_correct.isIsomorphic(spc5_nonrepresentative, generate_res=True))
-        self.assertTrue(spc6_correct.isIsomorphic(spc6_nonrepresentative, generate_res=True))
+        self.assertTrue(spc1_correct.is_same(spc1_nonrepresentative, generate_res=True))
+        self.assertTrue(spc2_correct.is_same(spc2_nonrepresentative, generate_res=True))
+        self.assertTrue(spc3_correct.is_same(spc3_nonrepresentative, generate_res=True))
+        self.assertTrue(spc4_correct.is_same(spc4_nonrepresentative, generate_res=True))
+        self.assertTrue(spc5_correct.is_same(spc5_nonrepresentative, generate_res=True))
+        self.assertTrue(spc6_correct.is_same(spc6_nonrepresentative, generate_res=True))
 
     def testGetResonanceHybrid(self):
         """
@@ -248,7 +248,7 @@ class TestSpecies(unittest.TestCase):
         spec = Species().fromSMILES('C=C[CH]CC')
         hybridMol = spec.getResonanceHybrid()
         
-        self.assertTrue(hybridMol.toSingleBonds().isIsomorphic(spec.molecule[0].toSingleBonds()))
+        self.assertTrue(hybridMol.toSingleBonds().is_same(spec.molecule[0].toSingleBonds()))
         
         # a rough check for intermediate bond orders
         expected_orders = [1,1.5]
@@ -271,7 +271,7 @@ class TestSpecies(unittest.TestCase):
         spc_cp = self.species.copy()
 
         self.assertTrue(id(self.species) != id(spc_cp))
-        self.assertTrue(self.species.isIsomorphic(spc_cp))
+        self.assertTrue(self.species.is_same(spc_cp))
         self.assertEquals(self.species.label, spc_cp.label)
         self.assertEquals(self.species.index, spc_cp.index)
 

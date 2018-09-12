@@ -382,7 +382,7 @@ class TransportDatabase(object):
         """
         for label, entry in library.entries.iteritems():
             for molecule in species.molecule:
-                if molecule.isIsomorphic(entry.item) and entry.data is not None:
+                if molecule.is_same(entry.item) and entry.data is not None:
                     return (deepcopy(entry.data), library, entry)
         return None
 

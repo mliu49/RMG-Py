@@ -70,7 +70,7 @@ class RDKitTest(unittest.TestCase):
         except AtomTypeError as e:
             self.fail('Could not convert from RDKitMol: ' + e.message)
         else:
-            self.assertTrue(mol.isIsomorphic(mol2))
+            self.assertTrue(mol.is_same(mol2))
 
     def test_atom_mapping_1(self):
         """Test that toRDKitMol returns correct indices and atom mappings."""
@@ -147,7 +147,7 @@ class ConverterTest(unittest.TestCase):
             rdkit_mol = toRDKitMol(mol)
             new_mol = fromRDKitMol(Molecule(), rdkit_mol)
 
-            self.assertTrue(mol.isIsomorphic(new_mol))
+            self.assertTrue(mol.is_same(new_mol))
             self.assertEqual(mol.get_element_count(), new_mol.get_element_count())
 
     def test_ob_round_trip(self):
@@ -156,5 +156,5 @@ class ConverterTest(unittest.TestCase):
             ob_mol = toOBMol(mol)
             new_mol = fromOBMol(Molecule(), ob_mol)
 
-            self.assertTrue(mol.isIsomorphic(new_mol))
+            self.assertTrue(mol.is_same(new_mol))
             self.assertEqual(mol.get_element_count(), new_mol.get_element_count())

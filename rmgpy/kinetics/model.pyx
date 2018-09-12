@@ -349,7 +349,7 @@ cdef class PDepKineticsModel(KineticsModel):
         eff_frac = 0.0
         for mol, eff in self.efficiencies.iteritems():
             for spec in species:
-                if spec.isIsomorphic(mol):
+                if spec.is_same(mol):
                     i = species.index(spec)
                     frac = _fractions[i]
                     Peff += eff * frac
@@ -382,7 +382,7 @@ cdef class PDepKineticsModel(KineticsModel):
         all_efficiencies = numpy.ones(len(species), numpy.float64)
         for mol, eff in self.efficiencies.iteritems():
             for spec in species:
-                if spec.isIsomorphic(mol):
+                if spec.is_same(mol):
                     i = species.index(spec)
                     # override default unity value to the actual efficiency of the collider
                     all_efficiencies[i] = eff 
@@ -491,7 +491,7 @@ cdef class PDepKineticsModel(KineticsModel):
         efficiencies = {}
         for collider, efficiency in sorted(self.efficiencies.items(), key=lambda item: id(item[0])):
             for species in speciesList:
-                if any([collider.isIsomorphic(molecule) for molecule in species.molecule]):
+                if any([collider.is_same(molecule) for molecule in species.molecule]):
                     efficiencies[species.toChemkin()] = efficiency
                     break
         return efficiencies

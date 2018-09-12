@@ -1210,11 +1210,11 @@ class Reaction:
             for reactant, product in self.pairs:
                 new_pair = []
                 for reactant0 in self.reactants:
-                    if reactant0.isIsomorphic(reactant):
+                    if reactant0.is_same(reactant):
                         new_pair.append(reactant0)
                         break
                 for product0 in self.products:
-                    if product0.isIsomorphic(product):
+                    if product0.is_same(product):
                         new_pair.append(product0)
                         break
                 new_pairs.append(new_pair)

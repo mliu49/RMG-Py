@@ -229,9 +229,9 @@ def findTargetRxnsContaining(mol1, mol2, reactions):
         products = rxn.products
         rxn_specs = reactants + products
         for rxn_spec in rxn_specs:
-            if rxn_spec.isIsomorphic(mol1):
+            if rxn_spec.is_same(mol1):
                 for rxn_spec1 in rxn_specs:
-                    if rxn_spec1.isIsomorphic(mol2):
+                    if rxn_spec1.is_same(mol2):
                         target_rxns.append(rxn)
     return target_rxns
 

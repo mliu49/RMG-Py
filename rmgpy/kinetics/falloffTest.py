@@ -125,7 +125,7 @@ class TestThirdBody(unittest.TestCase):
         species = [Species(molecule=[mol]) for mol in self.thirdBody.efficiencies.keys()]
         for mol, eff in self.thirdBody.efficiencies.items():
             for spec in species:
-                if spec.isIsomorphic(mol):
+                if spec.is_same(mol):
                     i = species.index(spec)
                     break
             fractions = numpy.zeros(len(species))
@@ -138,9 +138,9 @@ class TestThirdBody(unittest.TestCase):
         fractions[1] = 0.5
         eff = 0
         for mol in self.thirdBody.efficiencies.keys():
-            if species[0].isIsomorphic(mol):
+            if species[0].is_same(mol):
                 eff += 0.5 * self.thirdBody.efficiencies[mol]
-            if species[1].isIsomorphic(mol):
+            if species[1].is_same(mol):
                 eff += 0.5 * self.thirdBody.efficiencies[mol]
         Peff = self.thirdBody.getEffectivePressure(P, species, fractions)
         self.assertAlmostEqual(P * eff, Peff)
@@ -149,7 +149,7 @@ class TestThirdBody(unittest.TestCase):
         species = [mol.copy(deep=True) for mol in self.thirdBody.efficiencies.keys()]
         for mol, eff in self.thirdBody.efficiencies.items():
             for spec in species:
-                if spec.isIsomorphic(mol):
+                if spec.is_same(mol):
                     i = species.index(spec)
                     break
             fractions = numpy.zeros(len(species))
@@ -159,9 +159,9 @@ class TestThirdBody(unittest.TestCase):
         # Also test a mixture of bath gases
         eff = 0
         for mol in self.thirdBody.efficiencies.keys():
-            if species[0].isIsomorphic(mol):
+            if species[0].is_same(mol):
                 eff += 0.5 * self.thirdBody.efficiencies[mol]
-            if species[1].isIsomorphic(mol):
+            if species[1].is_same(mol):
                 eff += 0.5 * self.thirdBody.efficiencies[mol]
         
         fractions = numpy.zeros(len(species))

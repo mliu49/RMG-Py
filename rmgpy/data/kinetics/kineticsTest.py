@@ -879,8 +879,8 @@ class TestKinetics(unittest.TestCase):
 
         self.assertEqual(len(reaction_list), 2)
 
-        case_1 = reaction_list[0].products[0].isIsomorphic(expected_product_1) and reaction_list[1].products[0].isIsomorphic(expected_product_2)
-        case_2 = reaction_list[0].products[0].isIsomorphic(expected_product_2) and reaction_list[1].products[0].isIsomorphic(expected_product_1)
+        case_1 = reaction_list[0].products[0].is_same(expected_product_1) and reaction_list[1].products[0].is_same(expected_product_2)
+        case_2 = reaction_list[0].products[0].is_same(expected_product_2) and reaction_list[1].products[0].is_same(expected_product_1)
 
         # Only one case should be true
         self.assertTrue(case_1 ^ case_2)
@@ -897,7 +897,7 @@ class TestKinetics(unittest.TestCase):
 
         self.assertEqual(len(reaction_list), 1)
 
-        self.assertTrue(reaction_list[0].products[0].isIsomorphic(expected_product))
+        self.assertTrue(reaction_list[0].products[0].is_same(expected_product))
 
     def test_generate_reactions_from_families_product_resonance(self):
         """Test that we can specify the product resonance structure when generating reactions"""

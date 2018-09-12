@@ -100,7 +100,7 @@ class ReactionModel:
         commonSpecies = {}; uniqueSpecies = []
         for spec in other.species:
             for spec0 in finalModel.species:
-                if spec.isIsomorphic(spec0):
+                if spec.is_same(spec0):
                     commonSpecies[spec] = spec0
                     if spec0.label not in ['Ar','N2','Ne','He']:
                         if not spec0.thermo.isIdenticalTo(spec.thermo):
@@ -114,7 +114,7 @@ class ReactionModel:
         commonReactions = {}; uniqueReactions = []
         for rxn in other.reactions:
             for rxn0 in finalModel.reactions:
-                if rxn.isIsomorphic(rxn0, eitherDirection=True):
+                if rxn.is_same(rxn0, either_direction=True):
                     commonReactions[rxn] = rxn0                    
                     if not rxn0.kinetics.isIdenticalTo(rxn.kinetics):
                         print 'Reaction {0} kinetics from model 1 did not match that of model 2.'.format(str(rxn0))

@@ -1281,7 +1281,7 @@ class ForbiddenStructures(Database):
         for entry in self.entries.values():
             if isinstance(entry.item, Molecule) or isinstance(entry.item, Species):
                 # Perform an isomorphism check
-                if entry.item.isIsomorphic(molecule):
+                if entry.item.is_same(molecule):
                     return True
             elif isinstance(entry.item, Group):
                 # We need to do subgraph isomorphism

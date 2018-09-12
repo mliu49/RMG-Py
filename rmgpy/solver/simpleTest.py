@@ -261,7 +261,7 @@ class SimpleReactorCheck(unittest.TestCase):
         for name, smiles in smilesDict.iteritems():
             mol = Molecule(SMILES=smiles)
             for species in speciesList:
-                if species.isIsomorphic(mol):
+                if species.is_same(mol):
                     speciesDict[name] = species
                     break
                 
@@ -329,7 +329,7 @@ class SimpleReactorCheck(unittest.TestCase):
         for name, smiles in smilesDict.iteritems():
             mol = Molecule(SMILES=smiles)
             for species in speciesList:
-                if species.isIsomorphic(mol):
+                if species.is_same(mol):
                     speciesDict[name] = species
                     break
 

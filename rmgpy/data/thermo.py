@@ -606,9 +606,8 @@ class ThermoLibrary(Database):
             raise DatabaseError('Found a duplicate molecule with label {0} in the thermo library {1}.  Please correct your library.'.format(label, self.name))
         
         for entry in self.entries.values():
-            if molecule.isIsomorphic(entry.item):
-                if molecule.multiplicity == entry.item.multiplicity:
-                    raise DatabaseError('Adjacency list and multiplicity of {0} matches that of existing molecule {1} in thermo library {2}.  Please correct your library.'.format(label, entry.label, self.name))
+            if molecule.is_same(entry.item):
+                raise DatabaseError('Adjacency list and multiplicity of {0} matches that of existing molecule {1} in thermo library {2}.  Please correct your library.'.format(label, entry.label, self.name))
         
         self.entries[label] = Entry(
             index = index,
@@ -1337,12 +1336,12 @@ class ThermoDatabase(object):
         items = []
         for entry in self.depository['stable'].entries.itervalues():
             for molecule in species.molecule:
-                if molecule.isIsomorphic(entry.item):
+                if molecule.is_same(entry.item):
                     items.append((deepcopy(entry.data), self.depository['stable'], entry))
                     break
         for entry in self.depository['radical'].entries.itervalues():
             for molecule in species.molecule:
-                if molecule.isIsomorphic(entry.item):
+                if molecule.is_same(entry.item):
                     items.append((deepcopy(entry.data), self.depository['radical'], entry))
                     break
         return items
@@ -1361,7 +1360,7 @@ class ThermoDatabase(object):
         match = None
         for entry in library.entries.itervalues():
             for molecule in species.molecule:
-                if molecule.isIsomorphic(entry.item) and entry.data is not None:
+                if molecule.is_same(entry.item) and entry.data is not None:
                     thermoData = deepcopy(entry.data)
                     thermoData.label = entry.label
                     findCp0andCpInf(species, thermoData)

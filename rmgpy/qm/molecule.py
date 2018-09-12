@@ -401,7 +401,7 @@ class QMMolecule:
             logging.error('The InChI in the thermo file {0} did not match the current molecule {1}'.format(filePath,self.uniqueIDlong))
             return None
         loadedMolecule = rmgpy.molecule.Molecule().fromAdjacencyList(local_context['adjacencyList'])
-        if not loadedMolecule.isIsomorphic(self.molecule):
+        if not loadedMolecule.is_same(self.molecule):
             logging.error('The adjacencyList in thermo file {0} did not match the current molecule {1}'.format(filePath,self.uniqueIDlong))
             return None
         thermo = local_context['thermoData']

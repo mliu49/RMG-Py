@@ -54,7 +54,7 @@ def saveEntry(f, entry):
     f.write('    label = "{0}",\n'.format(entry.label))
     
     if isinstance(entry.item, Species):
-        if Molecule(SMILES=entry.item.molecule[0].toSMILES()).isIsomorphic(entry.item.molecule[0]):
+        if Molecule(SMILES=entry.item.molecule[0].toSMILES()).is_same(entry.item.molecule[0]):
             # The SMILES representation accurately describes the molecule, so we can save it that way.
             f.write('    molecule = "{0}",\n'.format(entry.item.molecule[0].toSMILES()))
         else:
@@ -661,7 +661,7 @@ class SolvationDatabase(object):
         :class:`DatabaseError` is raised.
         """
         for label, entry in library.entries.iteritems():
-            if species.isIsomorphic(entry.item) and entry.data is not None:
+            if species.is_same(entry.item) and entry.data is not None:
                 return (deepcopy(entry.data), library, entry)
         return None
 
@@ -933,7 +933,7 @@ class SolvationDatabase(object):
         """
         for spec in rmg.initialSpecies:
             if solventStructure is not None:
-                spec.isSolvent = spec.isIsomorphic(solventStructure)
+                spec.isSolvent = spec.is_same(solventStructure)
             else:
                 spec.isSolvent = rmg.solvent == spec.label
         if not any([spec.isSolvent for spec in rmg.initialSpecies]):

@@ -194,7 +194,7 @@ class ResonanceTest(unittest.TestCase):
         isomorphic_counter = 0
         negatively_charged_nitrogen = 0
         for mol1 in mol_list:
-            if mol1.isIsomorphic(mol):
+            if mol1.is_same(mol):
                 isomorphic_counter += 1
             for atom in mol1.vertices:
                 if atom.isNitrogen() and atom.charge < 0:
@@ -209,7 +209,7 @@ class ResonanceTest(unittest.TestCase):
         mol = Molecule(SMILES="N[N+]([O-])=O")
         mol_list = generate_resonance_structures(mol, keep_isomorphic=True)
         self.assertEqual(len(mol_list), 2)
-        self.assertTrue(mol_list[0].isIsomorphic(mol_list[1]))
+        self.assertTrue(mol_list[0].is_same(mol_list[1]))
 
     def testStyryl1(self):
         """Test resonance structure generation for styryl, with radical on branch
@@ -364,8 +364,8 @@ class ResonanceTest(unittest.TestCase):
         mol_list2 = generate_resonance_structures(mol2)
         self.assertEqual(len(mol_list2), 2)
 
-        self.assertTrue(mol_list1[1].isIsomorphic(mol2))
-        self.assertTrue(mol_list2[1].isIsomorphic(mol1))
+        self.assertTrue(mol_list1[1].is_same(mol2))
+        self.assertTrue(mol_list2[1].is_same(mol1))
 
     def test_aryne_2_rings(self):
         """Test aryne resonance in naphthyne"""
@@ -381,7 +381,7 @@ class ResonanceTest(unittest.TestCase):
         self.assertEqual(sum(1 for mol in mol_list2 if mol.reactive), 2)
 
         # Check that they both have an aromatic resonance form
-        self.assertTrue(mol_list1[1].isIsomorphic(mol_list2[0]))
+        self.assertTrue(mol_list1[1].is_same(mol_list2[0]))
 
     def test_aryne_3_rings(self):
         """Test aryne resonance in phenanthryne"""
@@ -429,7 +429,7 @@ class ResonanceTest(unittest.TestCase):
 """)
         perylene2 = Molecule().fromSMILES('c1cc2cccc3c4cccc5cccc(c(c1)c23)c54')
         for isomer in generate_optimal_aromatic_resonance_structures(perylene2):
-            if perylene.isIsomorphic(isomer):
+            if perylene.is_same(isomer):
                 break
         else:  # didn't break
             self.fail("{} isn't isomorphic with any aromatic forms of {}".format(
@@ -461,7 +461,7 @@ class ResonanceTest(unittest.TestCase):
 """)
         naphthalene2 = Molecule().fromSMILES('C1=CC=C2C=CC=CC2=C1')
         for isomer in generate_optimal_aromatic_resonance_structures(naphthalene2):
-            if naphthalene.isIsomorphic(isomer):
+            if naphthalene.is_same(isomer):
                 break
         else:  # didn't break
             self.fail("{} isn't isomorphic with any aromatic forms of {}".format(
@@ -571,8 +571,8 @@ multiplicity 2
         self.assertEqual(len(result2), 1)
         self.assertEqual(len(result3), 1)
 
-        self.assertTrue(result1[0].isIsomorphic(result2[0]))
-        self.assertTrue(result1[0].isIsomorphic(result3[0]))
+        self.assertTrue(result1[0].is_same(result2[0]))
+        self.assertTrue(result1[0].is_same(result3[0]))
 
     def testBridgedAromatic(self):
         """Test that we can handle bridged aromatics.
@@ -602,7 +602,7 @@ multiplicity 2
         out = generate_resonance_structures(mol)
 
         self.assertEqual(len(out), 3)
-        self.assertTrue(arom.isIsomorphic(out[0]))
+        self.assertTrue(arom.is_same(out[0]))
 
     def testPolycyclicAromaticWithNonAromaticRing(self):
         """Test that we can make aromatic resonance structures when there is a pseudo-aromatic ring.
@@ -634,7 +634,7 @@ multiplicity 2
         out = generate_resonance_structures(mol)
 
         self.assertEqual(len(out), 2)
-        self.assertTrue(arom.isIsomorphic(out[0]))
+        self.assertTrue(arom.is_same(out[0]))
 
     def testPolycyclicAromaticWithNonAromaticRing2(self):
         """Test that we can make aromatic resonance structures when there is a pseudo-aromatic ring.
@@ -688,7 +688,7 @@ multiplicity 2
         out = generate_resonance_structures(mol)
 
         self.assertEqual(len(out), 4)
-        self.assertTrue(arom.isIsomorphic(out[0]))
+        self.assertTrue(arom.is_same(out[0]))
 
     def testKekulizeBenzene(self):
         """Test that we can kekulize benzene."""
@@ -723,7 +723,7 @@ multiplicity 2
         out = generate_kekule_structure(arom)
 
         self.assertEqual(len(out), 1)
-        self.assertTrue(out[0].isIsomorphic(keku))
+        self.assertTrue(out[0].is_same(keku))
 
     def testKekulizeNaphthalene(self):
         """Test that we can kekulize naphthalene."""
@@ -1032,7 +1032,7 @@ multiplicity 2
         out = generate_resonance_structures(mol, keep_isomorphic=True)
 
         self.assertEqual(len(out), 2)
-        self.assertTrue(out[0].isIsomorphic(out[1]))
+        self.assertTrue(out[0].is_same(out[1]))
         self.assertFalse(out[0].isIdentical(out[1]))
 
     def testKeepIsomorphicStructuresFunctionsWhenFalse(self):
@@ -1071,7 +1071,7 @@ multiplicity 2
 """)
 
         self.assertEqual(len(out), 4)
-        self.assertTrue(any([m.isIsomorphic(aromatic) for m in out]))
+        self.assertTrue(any([m.is_same(aromatic) for m in out]))
 
     def testFalseNegativePolycyclicAromaticityPerception(self):
         """Test that we generate proper structures for a polycyclic aromatic that RDKit mis-identifies."""
@@ -1103,7 +1103,7 @@ multiplicity 2
 """)
 
         self.assertEqual(len(out), 6)
-        self.assertTrue(any([m.isIsomorphic(clar) for m in out]))
+        self.assertTrue(any([m.is_same(clar) for m in out]))
 
     def testFalseNegativePolycylicAromaticityPerception2(self):
         """Test that we obtain the correct aromatic structure for a polycylic aromatic that RDKit mis-identifies."""
@@ -1139,7 +1139,7 @@ multiplicity 2
 """)
 
         self.assertEqual(len(out), 7)
-        self.assertTrue(any([m.isIsomorphic(aromatic) for m in out]))
+        self.assertTrue(any([m.is_same(aromatic) for m in out]))
 
 
 class ClarTest(unittest.TestCase):
@@ -1213,7 +1213,7 @@ class ClarTest(unittest.TestCase):
 """)
 
         self.assertEqual(len(newmol), 1)
-        self.assertTrue(newmol[0].isIsomorphic(struct))
+        self.assertTrue(newmol[0].is_same(struct))
 
     def testPhenalene(self):
         """Test that we generate 2 Clar structures for phenalene.
@@ -1272,9 +1272,9 @@ class ClarTest(unittest.TestCase):
 """)
 
         self.assertEqual(len(newmol), 2)
-        self.assertTrue(newmol[0].isIsomorphic(struct1) or newmol[0].isIsomorphic(struct2))
-        self.assertTrue(newmol[1].isIsomorphic(struct2) or newmol[1].isIsomorphic(struct1))
-        self.assertFalse(newmol[0].isIsomorphic(newmol[1]))
+        self.assertTrue(newmol[0].is_same(struct1) or newmol[0].is_same(struct2))
+        self.assertTrue(newmol[1].is_same(struct2) or newmol[1].is_same(struct1))
+        self.assertFalse(newmol[0].is_same(newmol[1]))
 
     def testCorannulene(self):
         """Test that we generate 5 Clar structures for corannulene
@@ -1316,11 +1316,11 @@ class ClarTest(unittest.TestCase):
 """)
 
         self.assertEqual(len(newmol), 5)
-        self.assertTrue(newmol[0].isIsomorphic(struct))
-        self.assertTrue(newmol[1].isIsomorphic(struct))
-        self.assertTrue(newmol[2].isIsomorphic(struct))
-        self.assertTrue(newmol[3].isIsomorphic(struct))
-        self.assertTrue(newmol[4].isIsomorphic(struct))
+        self.assertTrue(newmol[0].is_same(struct))
+        self.assertTrue(newmol[1].is_same(struct))
+        self.assertTrue(newmol[2].is_same(struct))
+        self.assertTrue(newmol[3].is_same(struct))
+        self.assertTrue(newmol[4].is_same(struct))
 
     def testExocyclicDB(self):
         """Test that Clar structure generation doesn't modify exocyclic double bonds

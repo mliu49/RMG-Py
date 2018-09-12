@@ -650,7 +650,7 @@ class StatmechDatabase(object):
         items = []
         for name, depository in self.depository.iteritems():
             for label, entry in depository.entries.iteritems():
-                if molecule.isIsomorphic(entry.item):
+                if molecule.is_same(entry.item):
                     items.append((entry.data, self.depository[name], entry))
         return items
 
@@ -661,7 +661,7 @@ class StatmechDatabase(object):
         `library`. Returns ``None`` if no data was found.
         """
         for label, entry in library.entries.iteritems():
-            if molecule.isIsomorphic(entry.item):
+            if molecule.is_same(entry.item):
                 return (entry.data, library, entry)
         return None
 

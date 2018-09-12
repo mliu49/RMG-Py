@@ -284,7 +284,7 @@ multiplicity 2
 """)
         spec.generate_resonance_structures()
 
-        self.assertTrue(arom.isIsomorphic(spec.molecule[0]))  # The aromatic structure should be the first one
+        self.assertTrue(arom.is_same(spec.molecule[0]))  # The aromatic structure should be the first one
         # Move the aromatic structure to the end for testing
         spec.molecule.append(spec.molecule.pop(0))
 
@@ -293,7 +293,7 @@ multiplicity 2
 
         self.assertEqual(len(initial), len(spec.molecule))
         self.assertEqual(set(initial), set(spec.molecule))
-        self.assertTrue(arom.isIsomorphic(spec.molecule[0]))  # The aromatic structure should now be the first one
+        self.assertTrue(arom.is_same(spec.molecule[0]))  # The aromatic structure should now be the first one
         self.assertTrue('library' in thermo.comment, 'Thermo not found from library, test purpose not fulfilled.')
 
     def testThermoEstimationNotAffectDatabase(self):
@@ -1248,8 +1248,8 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         expected_submol_b.updateConnectivityValues()
 
 
-        self.assertTrue(single_ring_submol_a.isIsomorphic(expected_submol_a))
-        self.assertTrue(single_ring_submol_b.isIsomorphic(expected_submol_b))
+        self.assertTrue(single_ring_submol_a.is_same(expected_submol_a))
+        self.assertTrue(single_ring_submol_b.is_same(expected_submol_b))
 
     def testSplitBicyclicIntoSingleRings2(self):
         """
@@ -1277,8 +1277,8 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         expected_submol_b = Molecule().fromSMILES('C1=CC=CC1')
         expected_submol_b.updateConnectivityValues()
 
-        self.assertTrue(single_ring_submol_a.isIsomorphic(expected_submol_a))
-        self.assertTrue(single_ring_submol_b.isIsomorphic(expected_submol_b))
+        self.assertTrue(single_ring_submol_a.is_same(expected_submol_a))
+        self.assertTrue(single_ring_submol_b.is_same(expected_submol_b))
 
     def testSaturateRingBonds1(self):
         """
@@ -1297,7 +1297,7 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         self.assertFalse(alreadySaturated)
         self.assertEqual(saturated_ring_submol.multiplicity,
                             expected_saturated_ring_submol.multiplicity)
-        self.assertTrue(saturated_ring_submol.isIsomorphic(expected_saturated_ring_submol))
+        self.assertTrue(saturated_ring_submol.is_same(expected_saturated_ring_submol))
 
     def testSaturateRingBonds2(self):
         """
@@ -1320,7 +1320,7 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         self.assertTrue(alreadySaturated)
         self.assertEqual(saturated_ring_submol.multiplicity,
                             expected_saturated_ring_submol.multiplicity)
-        self.assertTrue(saturated_ring_submol.isIsomorphic(expected_saturated_ring_submol))
+        self.assertTrue(saturated_ring_submol.is_same(expected_saturated_ring_submol))
 
     def testSaturateRingBonds3(self):
         """
@@ -1343,7 +1343,7 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         self.assertFalse(alreadySaturated)
         self.assertEqual(saturated_ring_submol.multiplicity,
                             expected_saturated_ring_submol.multiplicity)
-        self.assertTrue(saturated_ring_submol.isIsomorphic(expected_saturated_ring_submol))
+        self.assertTrue(saturated_ring_submol.is_same(expected_saturated_ring_submol))
 
 
 def getTestingTCDAuthenticationInfo():
@@ -1529,7 +1529,7 @@ class TestThermoCentralDatabaseInterface(unittest.TestCase):
         # check all the columns are expected
         registered_species = Species().fromSMILES(str(registered_species_entry['SMILES_input']))
         self.assertEqual(registered_species_entry['aug_inchi'], expected_aug_inchi)
-        self.assertTrue(registered_species.isIsomorphic(species))
+        self.assertTrue(registered_species.is_same(species))
         self.assertIn(registered_species_entry['status'], ['pending', 'submitted'])
 
         # clean up the table

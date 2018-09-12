@@ -802,7 +802,7 @@ class KineticsFamily(Database):
                         except KeyError:
                             # Atom labels did not match, therefore not a match
                             continue
-                        if spec.molecule[0].isIsomorphic(ex_spec.molecule[0], initialMap):
+                        if spec.molecule[0].is_same(ex_spec.molecule[0], initial_map=initialMap):
                             spec.label = ex_spec.label
                             break
                 else:  # No isomorphic existing species found
@@ -1612,16 +1612,16 @@ class KineticsFamily(Database):
         if self.ownReverse and all([spc.has_reactive_molecule() for spc in rxn.products]):
             # Check if the reactants are the same
             sameReactants = 0
-            if len(rxn.products) == 2 and rxn.products[0].isIsomorphic(rxn.products[1]):
+            if len(rxn.products) == 2 and rxn.products[0].is_same(rxn.products[1]):
                 sameReactants = 2
             elif len(rxn.products) == 3:
-                same_01 = rxn.products[0].isIsomorphic(rxn.products[1])
-                same_02 = rxn.products[0].isIsomorphic(rxn.products[2])
+                same_01 = rxn.products[0].is_same(rxn.products[1])
+                same_02 = rxn.products[0].is_same(rxn.products[2])
                 if same_01 and same_02:
                     sameReactants = 3
                 elif same_01 or same_02:
                     sameReactants = 2
-                elif rxn.products[1].isIsomorphic(rxn.products[2]):
+                elif rxn.products[1].is_same(rxn.products[2]):
                     sameReactants = 2
 
             reactionList = self.__generateReactions([spc.molecule for spc in rxn.products],
@@ -1651,14 +1651,14 @@ class KineticsFamily(Database):
                     reactions = find_degenerate_reactions(reactionList, sameReactants, kinetics_family=self)
                 finally:
                     self.forbidden = tempObject
-                if len(reactions) == 1 or (len(reactions) > 1 and all([reactions[0].isIsomorphic(other, checkTemplateRxnProducts=True) for other in reactions])):
+                if len(reactions) == 1 or (len(reactions) > 1 and all([reactions[0].is_same(other, check_template_rxn_products=True) for other in reactions])):
                     logging.error("Error was fixed, the product is a forbidden structure when used as a reactant in the reverse direction.")
                     # This reaction should be forbidden in the forward direction as well
                     return False
                 else:
                     logging.error("Still experiencing error: Expecting one matching reverse reaction, not {0} in reaction family {1} for forward reaction {2}.\n".format(len(reactions), self.label, str(rxn)))
                     raise KineticsError("Did not find reverse reaction in reaction family {0} for reaction {1}.".format(self.label, str(rxn)))
-            elif len(reactions) > 1 and not all([reactions[0].isIsomorphic(other, checkTemplateRxnProducts=True) for other in reactions]):
+            elif len(reactions) > 1 and not all([reactions[0].is_same(other, check_template_rxn_products=True) for other in reactions]):
                 logging.error("Expecting one matching reverse reaction. Recieved {0} reactions with multiple non-isomorphic ones in reaction family {1} for forward reaction {2}.\n".format(len(reactions), self.label, str(rxn)))
                 logging.info("Found the following reverse reactions")
                 for rxn0 in reactions:
@@ -1693,7 +1693,7 @@ class KineticsFamily(Database):
             if reactants[0] is reactants[1]:
                 reactants[1] = reactants[1].copy(deep=True)
                 same_reactants = 2
-            elif reactants[0].isIsomorphic(reactants[1]):
+            elif reactants[0].is_same(reactants[1]):
                 same_reactants = 2
         elif len(reactants) == 3:
             same_01 = reactants[0] is reactants[1]
@@ -1712,13 +1712,13 @@ class KineticsFamily(Database):
                 same_reactants = 2
                 reactants[2] = reactants[2].copy(deep=True)
             else:
-                same_01 = reactants[0].isIsomorphic(reactants[1])
-                same_02 = reactants[0].isIsomorphic(reactants[2])
+                same_01 = reactants[0].is_same(reactants[1])
+                same_02 = reactants[0].is_same(reactants[2])
                 if same_01 and same_02:
                     same_reactants = 3
                 elif same_01 or same_02:
                     same_reactants = 2
-                elif reactants[1].isIsomorphic(reactants[2]):
+                elif reactants[1].is_same(reactants[2]):
                     same_reactants = 2
 
         # Label reactant atoms for proper degeneracy calculation
@@ -2144,8 +2144,8 @@ class KineticsFamily(Database):
         kineticsList = []
         entries = depository.entries.values()
         for entry in entries:
-            if entry.item.isIsomorphic(reaction):
-                kineticsList.append([deepcopy(entry.data), entry, entry.item.isIsomorphic(reaction, eitherDirection=False)])
+            if entry.item.is_same(reaction):
+                kineticsList.append([deepcopy(entry.data), entry, entry.item.is_same(reaction, either_direction=False)])
         for kinetics, entry, is_forward in kineticsList:
             if kinetics is not None:
                 kinetics.comment += "Matched reaction {0} {1} in {2}\nThis reaction matched rate rule {3}".format(entry.index, 
@@ -2412,7 +2412,7 @@ class KineticsFamily(Database):
         # this prevents overwriting of attributes of species objects by this method
         for index, species in enumerate(products):
             for labeled_molecule in labeled_products:
-                if species.isIsomorphic(labeled_molecule):
+                if species.is_same(labeled_molecule):
                     species.molecule = [labeled_molecule]
                     reaction.products[index] = species
                     break
@@ -2420,7 +2420,7 @@ class KineticsFamily(Database):
                 raise ActionError('Could not find isomorphic molecule to fit the original product {} from reaction {}'.format(species, reaction))
         for index, species in enumerate(reactants):
             for labeled_molecule in labeled_reactants:
-                if species.isIsomorphic(labeled_molecule):
+                if species.is_same(labeled_molecule):
                     species.molecule = [labeled_molecule]
                     reaction.reactants[index] = species
                     break
@@ -3052,7 +3052,7 @@ class KineticsFamily(Database):
                     raise AssertionError('Reaction {0} uses kinetics from training reaction {1} but does not match the training reaction {1} from the {2} family.'.format(reaction,trainingReactionIndex,self.label))
                 
                 # Sometimes the matched kinetics could be in the reverse direction..... 
-                if reaction.isIsomorphic(trainingEntry.item, eitherDirection=False):
+                if reaction.is_same(trainingEntry.item, either_direction=False):
                     reverse=False
                 else:
                     reverse=True

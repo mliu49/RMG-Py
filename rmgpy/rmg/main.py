@@ -529,7 +529,7 @@ class RMG(util.Subject):
                 
                 O2Singlet=Molecule().fromSMILES('O=O')
                 for spec in allInputtedSpecies:
-                    if spec.isIsomorphic(O2Singlet):
+                    if spec.is_same(O2Singlet):
                         raise ForbiddenStructureException("""Species constraints forbids input species {0}
                         RMG expects the triplet form of oxygen for correct usage in reaction families. Please change your input to SMILES='[O][O]'
                         If you actually want to use the singlet state, set the allowSingletO2=True inside of the Species Constraints block in your input file.
@@ -951,7 +951,7 @@ class RMG(util.Subject):
         for i, spc in enumerate(self.reactionModel.core.species):
             for j in xrange(i):
                 spc2 = self.reactionModel.core.species[j]
-                if spc.isIsomorphic(spc2):
+                if spc.is_same(spc2):
                     raise CoreError(
                         'Although the model has completed, species {0} is isomorphic to species {1} in the core. '
                         'Please open an issue on GitHub with the following output:'
@@ -961,7 +961,7 @@ class RMG(util.Subject):
         for i, spc in enumerate(self.reactionModel.edge.species):
             for j in xrange(i):
                 spc2 = self.reactionModel.edge.species[j]
-                if spc.isIsomorphic(spc2):
+                if spc.is_same(spc2):
                     logging.warning(
                         'Species {0} is isomorphic to species {1} in the edge. This does not affect '
                         'the generated model. If you would like to report this to help make RMG better '

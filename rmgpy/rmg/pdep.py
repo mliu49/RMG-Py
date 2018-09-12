@@ -331,15 +331,15 @@ class PDepNetwork(rmgpy.pdep.network.Network):
         for conf in self.isomers+self.products+self.reactants:
             if len(conf.species) == len(self.source):
                 if len(self.source) == 1:
-                    if self.source[0].isIsomorphic(conf.species[0]):
+                    if self.source[0].is_same(conf.species[0]):
                         E0source = conf.E0
                         break
                 elif len(self.source) == 2:
-                    boo00 = self.source[0].isIsomorphic(conf.species[0])
-                    boo01 = self.source[0].isIsomorphic(conf.species[1])
+                    boo00 = self.source[0].is_same(conf.species[0])
+                    boo01 = self.source[0].is_same(conf.species[1])
                     if boo00 or boo01: # if we found source[0]
-                        boo10 = self.source[1].isIsomorphic(conf.species[0])
-                        boo11 = self.source[1].isIsomorphic(conf.species[1])
+                        boo10 = self.source[1].is_same(conf.species[0])
+                        boo11 = self.source[1].is_same(conf.species[1])
                         if (boo00 and boo11) or (boo01 and boo10):
                             E0source = conf.E0
                             break
@@ -795,7 +795,7 @@ class PDepNetwork(rmgpy.pdep.network.Network):
                         # Check whether netReaction already exists in the core as a LibraryReaction
                         for rxn in reactionModel.core.reactions:
                             if isinstance(rxn, LibraryReaction) \
-                                    and rxn.isIsomorphic(netReaction, eitherDirection=True) \
+                                    and rxn.is_same(netReaction, either_direction=True) \
                                     and not rxn.allow_pdep_route and not rxn.elementary_high_p:
                                 logging.info('Network reaction {0} matched an existing core reaction {1}'
                                     ' from the {2} library, and was not added to the model'.format(
@@ -807,7 +807,7 @@ class PDepNetwork(rmgpy.pdep.network.Network):
                         # Check whether netReaction already exists in the edge as a LibraryReaction
                         for rxn in reactionModel.edge.reactions:
                             if isinstance(rxn, LibraryReaction) \
-                                    and rxn.isIsomorphic(netReaction, eitherDirection=True) \
+                                    and rxn.is_same(netReaction, either_direction=True) \
                                     and not rxn.allow_pdep_route and not rxn.elementary_high_p:
                                 logging.info('Network reaction {0} matched an existing edge reaction {1}'
                                     ' from the {2} library, and was not added to the model'.format(

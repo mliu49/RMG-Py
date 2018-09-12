@@ -236,7 +236,7 @@ class IsotopesTest(unittest.TestCase):
         labeledRxn = Reaction(reactants=[ethi], products = [ethi])
         stripped = remove_isotope(labeledRxn)
 
-        self.assertTrue(unlabeledRxn.isIsomorphic(stripped))
+        self.assertTrue(unlabeledRxn.is_same(stripped))
 
     def testRemoveIsotopeForSpecies(self):
         """
@@ -271,7 +271,7 @@ class IsotopesTest(unittest.TestCase):
 
         stripped = remove_isotope(ethi)
 
-        self.assertTrue(eth.isIsomorphic(stripped))
+        self.assertTrue(eth.is_same(stripped))
 
     def testInplaceRemoveIsotopeForReactions(self):
         """
@@ -308,11 +308,11 @@ class IsotopesTest(unittest.TestCase):
         storedLabeledRxn = labeledRxn.copy()
         modifiedAtoms = remove_isotope(labeledRxn, inplace=True)
 
-        self.assertTrue(unlabeledRxn.isIsomorphic(labeledRxn))
+        self.assertTrue(unlabeledRxn.is_same(labeledRxn))
 
         redo_isotope(modifiedAtoms)
 
-        self.assertTrue(storedLabeledRxn.isIsomorphic(labeledRxn))
+        self.assertTrue(storedLabeledRxn.is_same(labeledRxn))
 
     def testEnsureReactionDirection(self):
         """
@@ -416,7 +416,7 @@ multiplicity 2
             self.assertTrue(any([compare_isotopomers(methane, reactant) for reactant in rxn.reactants]),msg='ensureReactionDirection didnt flip the proper reactants and products')
 
             # ensure kinetics is correct
-            if any([dipropyli.isIsomorphic(reactant) for reactant in rxn.reactants]):
+            if any([dipropyli.is_same(reactant) for reactant in rxn.reactants]):
                 self.assertAlmostEqual(rxn.kinetics.A.value, 0.5, msg= 'The A value returned, {0}, is incorrect. Check the reactions degeneracy and how A.value is obtained. The reaction is:{1}'.format(rxn.kinetics.A.value, rxn))
             else:
                 self.assertAlmostEqual(rxn.kinetics.A.value, 1. , msg='The A value returned, {0}, is incorrect. Check the reactions degeneracy and how A.value is obtained. The reaction is:{1}'.format(rxn.kinetics.A.value, rxn))

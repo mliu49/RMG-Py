@@ -846,7 +846,7 @@ class TestMolecule(unittest.TestCase):
         """
         adjlist_1 = self.molecule[0].toAdjacencyList(removeH=False)
         newMolecule = Molecule().fromAdjacencyList(adjlist_1)
-        self.assertTrue(self.molecule[0].isIsomorphic(newMolecule))
+        self.assertTrue(self.molecule[0].is_same(newMolecule))
         
         #self.assertEqual(adjlist_1.strip(), self.adjlist_1.strip())
         
@@ -1029,8 +1029,8 @@ multiplicity 2
         15 H u0 p0 c0 {6,S}
         """)
         molecule2 = Molecule().fromSMILES('C=CC=C[CH]C')
-        self.assertTrue(molecule1.isIsomorphic(molecule2))
-        self.assertTrue(molecule2.isIsomorphic(molecule1))
+        self.assertTrue(molecule1.is_same(molecule2))
+        self.assertTrue(molecule2.is_same(molecule1))
     
     def test_generate_H_bonded_structures(self):
         """
@@ -1132,8 +1132,8 @@ multiplicity 2
         
         self.assertEqual(len(molecule0.atoms), len(molecule.atoms))
         self.assertEqual(molecule0.getFormula(), molecule.getFormula())
-        self.assertTrue(molecule0.isIsomorphic(molecule))
-        self.assertTrue(molecule.isIsomorphic(molecule0))
+        self.assertTrue(molecule0.is_same(molecule))
+        self.assertTrue(molecule.is_same(molecule0))
 
     def testRadicalCH(self):
         """
@@ -1539,7 +1539,7 @@ multiplicity 2
 """)
         saturated_molecule = indenyl.copy(deep=True)
         saturated_molecule.saturate_radicals()
-        self.assertTrue(saturated_molecule.isIsomorphic(indene))
+        self.assertTrue(saturated_molecule.is_same(indene))
         
     def testMalformedAugmentedInChI(self):
         """Test that augmented inchi without InChI layer raises Exception."""
@@ -2019,7 +2019,7 @@ multiplicity 2
         """
         calc = Molecule().fromAdjacencyList(adjlistCalc)
         
-        self.assertTrue(exp.isIsomorphic(calc))
+        self.assertTrue(exp.is_same(calc))
 
         exp = Molecule().fromSMILES('CC')
         exp.atoms[2].element = getElement('H', 2)
@@ -2036,7 +2036,7 @@ multiplicity 2
         """
         calc = Molecule().fromAdjacencyList(adjlistCalc)
         
-        self.assertTrue(exp.isIsomorphic(calc))
+        self.assertTrue(exp.is_same(calc))
 
         exp = Molecule().fromSMILES('OC')
         exp.atoms[0].element = getElement('O', 18)
@@ -2051,7 +2051,7 @@ multiplicity 2
         """
         calc = Molecule().fromAdjacencyList(adjlistCalc)
         
-        self.assertTrue(exp.isIsomorphic(calc))
+        self.assertTrue(exp.is_same(calc))
 
     def testAromaticityPerceptionBenzene(self):
         """Test aromaticity perception via getAromaticRings for benzene."""
@@ -2119,7 +2119,7 @@ multiplicity 2
         mol = Molecule(SMILES='CCCC')
         mol.assignAtomIDs()
         molCopy = mol.copy(deep=True)
-        self.assertTrue(mol.isIsomorphic(molCopy))
+        self.assertTrue(mol.is_same(molCopy))
         self.assertTrue(mol.isIdentical(molCopy))
 
     def testIdenticalFalse(self):
@@ -2136,7 +2136,7 @@ multiplicity 2
 
         molCopy.removeAtom(b)
 
-        self.assertTrue(mol.isIsomorphic(molCopy))
+        self.assertTrue(mol.is_same(molCopy))
         self.assertFalse(mol.isIdentical(molCopy))
 
     def testIdenticalFalse2(self):
@@ -2165,7 +2165,7 @@ multiplicity 2
         labeledAtoms['*1'].incrementRadical()
         labeledAtoms['*3'].decrementRadical()
 
-        self.assertTrue(mol.isIsomorphic(molCopy))
+        self.assertTrue(mol.is_same(molCopy))
         self.assertFalse(mol.isIdentical(molCopy))
 
     def testatomidvalid(self):
@@ -2225,7 +2225,7 @@ multiplicity 2
         self.assertEquals(hydrogens, 10)
 
         test.update()
-        self.assertTrue(expected.isIsomorphic(test))
+        self.assertTrue(expected.is_same(test))
 
         #test benzene
         expected = Molecule(SMILES='c1ccccc1')
@@ -2244,7 +2244,7 @@ multiplicity 2
         self.assertEquals(hydrogens, 6)
 
         test.update()
-        self.assertTrue(expected.isIsomorphic(test))
+        self.assertTrue(expected.is_same(test))
 
     def test_get_element_count(self):
         """Test that we can count elements properly."""

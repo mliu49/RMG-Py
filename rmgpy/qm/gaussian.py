@@ -170,7 +170,7 @@ class Gaussian:
         cclibMol = Molecule()
         cclibMol.fromXYZ(qmData.atomicNumbers, qmData.atomCoords.value)
         testMol = self.molecule.toSingleBonds()
-        if not cclibMol.isIsomorphic(testMol):
+        if not cclibMol.is_same(testMol):
             logging.info("Incorrect connectivity for optimized geometry in file {0}".format(self.outputFilePath))
             return False
 

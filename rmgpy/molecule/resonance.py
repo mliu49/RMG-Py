@@ -210,7 +210,7 @@ def generate_resonance_structures(mol, clar_structures=True, keep_isomorphic=Fal
                 features['isPolycyclicAromatic'] = True
             for new_mol in new_mol_list:
                 # Append to structure list if unique
-                if not keep_isomorphic and mol.isIsomorphic(new_mol):
+                if not keep_isomorphic and mol.is_same(new_mol):
                     continue
                 elif keep_isomorphic and mol.isIdentical(new_mol):
                     continue
@@ -299,7 +299,7 @@ def _generate_resonance_structures(mol_list, method_list, keep_isomorphic=False,
         for new_mol in new_mol_list:
             # Append to structure list if unique
             for mol in mol_list:
-                if not keep_isomorphic and mol.isIsomorphic(new_mol):
+                if not keep_isomorphic and mol.is_same(new_mol):
                     break
                 elif keep_isomorphic and mol.isIdentical(new_mol):
                     break
@@ -695,7 +695,7 @@ def generate_optimal_aromatic_resonance_structures(mol, features=None):
             continue
 
         for mol1 in new_mol_list:
-            if mol1.isIsomorphic(mol0):
+            if mol1.is_same(mol0):
                 break
         else:
             new_mol_list.append(mol0)
@@ -920,7 +920,7 @@ def generate_isomorphic_resonance_structures(mol, saturate_h=False):
         for newIsomer in new_isomers:
             # Append to isomer list if unique
             for isom in isomers:
-                if isom.copy(deep=True).isIsomorphic(newIsomer.copy(deep=True)):
+                if isom.copy(deep=True).is_same(newIsomer.copy(deep=True)):
                     isomorphic_isomers.append(newIsomer)
                     break
             else:

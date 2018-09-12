@@ -287,9 +287,9 @@ def find_degenerate_reactions(rxn_list, same_reactants=None, template=None, kine
                 identical = False
                 sameTemplate = True
                 for rxn in sub_list:
-                    isomorphic = rxn0.isIsomorphic(rxn, checkIdentical=False, checkTemplateRxnProducts=True)
+                    isomorphic = rxn0.is_same(rxn, map_atom_ids=False, check_template_rxn_products=True)
                     if isomorphic:
-                        identical = rxn0.isIsomorphic(rxn, checkIdentical=True, checkTemplateRxnProducts=True)
+                        identical = rxn0.is_same(rxn, map_atom_ids=True, check_template_rxn_products=True)
                         if identical:
                             # An exact copy of rxn0 is already in our list, so we can move on
                             break
@@ -360,7 +360,7 @@ def reduce_same_reactant_degeneracy(reaction, same_reactants=None):
     if not (same_reactants == 0 or same_reactants == 1):
         if len(reaction.reactants) == 2:
             if ((reaction.is_forward and same_reactants == 2) or
-                    reaction.reactants[0].isIsomorphic(reaction.reactants[1])):
+                    reaction.reactants[0].is_same(reaction.reactants[1])):
                 reaction.degeneracy *= 0.5
                 logging.debug(
                     'Degeneracy of reaction {} was decreased by 50% to {} since the reactants are identical'.format(
@@ -381,8 +381,8 @@ def reduce_same_reactant_degeneracy(reaction, same_reactants=None):
                         'are identical'.format(reaction, reaction.degeneracy)
                     )
             else:
-                same_01 = reaction.reactants[0].isIsomorphic(reaction.reactants[1])
-                same_02 = reaction.reactants[0].isIsomorphic(reaction.reactants[2])
+                same_01 = reaction.reactants[0].is_same(reaction.reactants[1])
+                same_02 = reaction.reactants[0].is_same(reaction.reactants[2])
                 if same_01 and same_02:
                     reaction.degeneracy /= 6.0
                     logging.debug(
@@ -395,7 +395,7 @@ def reduce_same_reactant_degeneracy(reaction, same_reactants=None):
                         'Degeneracy of reaction {} was decreased by 50% to {} since two of the reactants '
                         'are identical'.format(reaction, reaction.degeneracy)
                     )
-                elif reaction.reactants[1].isIsomorphic(reaction.reactants[2]):
+                elif reaction.reactants[1].is_same(reaction.reactants[2]):
                     reaction.degeneracy *= 0.5
                     logging.debug(
                         'Degeneracy of reaction {} was decreased by 50% to {} since two of the reactants '

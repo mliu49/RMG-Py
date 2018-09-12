@@ -65,7 +65,7 @@ def calculateAtomSymmetryNumber(molecule, atom):
     for group1 in groups:
         for group2 in groups:
             if group1 is not group2 and group2 not in groupIsomorphism[group1]:
-                groupIsomorphism[group1][group2] = group1.isIsomorphic(group2)
+                groupIsomorphism[group1][group2] = group1.is_same(group2)
                 groupIsomorphism[group2][group1] = groupIsomorphism[group1][group2]
             elif group1 is group2:
                 groupIsomorphism[group1][group1] = True
@@ -159,17 +159,17 @@ def calculateBondSymmetryNumber(molecule, atom1, atom2):
 
             # Test functional groups for symmetry
             if len(groups1) == len(groups2) == 1:
-                if groups1[0].isIsomorphic(groups2[0]): symmetryNumber *= 2
+                if groups1[0].is_same(groups2[0]): symmetryNumber *= 2
             elif len(groups1) == len(groups2) == 2:
-                if groups1[0].isIsomorphic(groups2[0]) and groups1[1].isIsomorphic(groups2[1]): symmetryNumber *= 2
-                elif groups1[1].isIsomorphic(groups2[0]) and groups1[0].isIsomorphic(groups2[1]): symmetryNumber *= 2
+                if groups1[0].is_same(groups2[0]) and groups1[1].is_same(groups2[1]): symmetryNumber *= 2
+                elif groups1[1].is_same(groups2[0]) and groups1[0].is_same(groups2[1]): symmetryNumber *= 2
             elif len(groups1) == len(groups2) == 3:
-                if groups1[0].isIsomorphic(groups2[0]) and groups1[1].isIsomorphic(groups2[1]) and groups1[2].isIsomorphic(groups2[2]): symmetryNumber *= 2
-                elif groups1[0].isIsomorphic(groups2[0]) and groups1[1].isIsomorphic(groups2[2]) and groups1[2].isIsomorphic(groups2[1]): symmetryNumber *= 2
-                elif groups1[0].isIsomorphic(groups2[1]) and groups1[1].isIsomorphic(groups2[2]) and groups1[2].isIsomorphic(groups2[0]): symmetryNumber *= 2
-                elif groups1[0].isIsomorphic(groups2[1]) and groups1[1].isIsomorphic(groups2[0]) and groups1[2].isIsomorphic(groups2[2]): symmetryNumber *= 2
-                elif groups1[0].isIsomorphic(groups2[2]) and groups1[1].isIsomorphic(groups2[0]) and groups1[2].isIsomorphic(groups2[1]): symmetryNumber *= 2
-                elif groups1[0].isIsomorphic(groups2[2]) and groups1[1].isIsomorphic(groups2[1]) and groups1[2].isIsomorphic(groups2[0]): symmetryNumber *= 2
+                if groups1[0].is_same(groups2[0]) and groups1[1].is_same(groups2[1]) and groups1[2].is_same(groups2[2]): symmetryNumber *= 2
+                elif groups1[0].is_same(groups2[0]) and groups1[1].is_same(groups2[2]) and groups1[2].is_same(groups2[1]): symmetryNumber *= 2
+                elif groups1[0].is_same(groups2[1]) and groups1[1].is_same(groups2[2]) and groups1[2].is_same(groups2[0]): symmetryNumber *= 2
+                elif groups1[0].is_same(groups2[1]) and groups1[1].is_same(groups2[0]) and groups1[2].is_same(groups2[2]): symmetryNumber *= 2
+                elif groups1[0].is_same(groups2[2]) and groups1[1].is_same(groups2[0]) and groups1[2].is_same(groups2[1]): symmetryNumber *= 2
+                elif groups1[0].is_same(groups2[2]) and groups1[1].is_same(groups2[1]) and groups1[2].is_same(groups2[0]): symmetryNumber *= 2
                 
                 
     return symmetryNumber
@@ -317,7 +317,7 @@ def calculateAxisSymmetryNumber(molecule):
             elif len(groups)==1 and terminalAtom.radicalElectrons != 0:
                 symmetry_broken = True
             elif len(groups)==2:
-                if not groups[0].isIsomorphic(groups[1]):
+                if not groups[0].is_same(groups[1]):
                     # this end has broken the symmetry of the axis
                     symmetry_broken = True
         

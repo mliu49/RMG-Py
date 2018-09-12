@@ -80,7 +80,7 @@ def loadRMGPyJob(inputFile, chemkinFile=None, speciesDict=None, generateImages=T
     speciesDict = {}
     for spec0 in rmg.initialSpecies:
         for species in speciesList:
-            if species.isIsomorphic(spec0):
+            if species.is_same(spec0):
                 speciesDict[spec0] = species
                 break
             
@@ -170,7 +170,7 @@ def loadRMGJavaJob(inputFile, chemkinFile=None, speciesDict=None, generateImages
     speciesDict = {}
     for spec0 in rmg.initialSpecies:
         for species in speciesList:
-            if species.isIsomorphic(spec0):
+            if species.is_same(spec0):
                 speciesDict[spec0] = species
                 break
             

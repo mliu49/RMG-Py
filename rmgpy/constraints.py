@@ -55,7 +55,7 @@ def failsSpeciesConstraints(species):
 
     explicitlyAllowedMolecules = speciesConstraints.get('explicitlyAllowedMolecules', [])
     for molecule in explicitlyAllowedMolecules:
-        if struct.isIsomorphic(molecule):
+        if struct.is_same(molecule):
             return False  
     
     maxCarbonAtoms = speciesConstraints.get('maximumCarbonAtoms', -1)          

@@ -116,7 +116,7 @@ class ReduceUnitTest(unittest.TestCase):
         
         species_list =[butene1,butene2]
         # make sure different species with same label
-        assert not species_list[0].isIsomorphic(species_list[1])
+        assert not species_list[0].is_same(species_list[1])
         assert species_list[0].label == species_list[1].label
         
         # make fake reactionModel object to fit in with the unittest
