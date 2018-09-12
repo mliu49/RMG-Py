@@ -46,6 +46,7 @@ transition states (first-order saddle points on a potential energy surface).
 import numpy
 import cython
 import logging
+import warnings
 from operator import itemgetter
 
 import rmgpy.quantity as quantity
@@ -282,6 +283,8 @@ class Species(object):
         "non-representative" resonance structure of self is generated, and it should be identified as the same Species,
         and be assigned a reactive=False flag.
         """
+        warnings.warn("The Species.isIsomorphic method is no longer supported and may be removed in version 2.3."
+                      "Use Species.is_same(other)` instead.", DeprecationWarning)
         if isinstance(other, Molecule):
             for molecule in self.molecule:
                 if molecule.isIsomorphic(other):
@@ -312,6 +315,8 @@ class Species(object):
         Return ``True`` if at least one molecule of the species is identical to `other`,
         which can be either a :class:`Molecule` object or a :class:`Species` object.
         """
+        warnings.warn("The Species.isIdentical method is no longer supported and may be removed in version 2.3."
+                      "Use Species.is_same(other, map_atom_ids=True)` instead.", DeprecationWarning)
         if isinstance(other, Molecule):
             for molecule in self.molecule:
                 if molecule.isIdentical(other):

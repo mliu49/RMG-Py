@@ -40,6 +40,7 @@ import itertools
 import logging
 import os
 import urllib
+import warnings
 from collections import OrderedDict
 from copy import deepcopy
 
@@ -1319,6 +1320,8 @@ class Molecule(Graph):
         be a :class:`Molecule` object, or a :class:`TypeError` is raised.
         Also ensures multiplicities are also equal.
         """
+        warnings.warn("The Molecule.isIsomorphic method is no longer supported and may be removed in version 2.3."
+                      "Use Molecule.is_same(other)` instead.", DeprecationWarning)
         # It only makes sense to compare a Molecule to a Molecule for full
         # isomorphism, so raise an exception if this is not what was requested
         if not isinstance(other, Molecule):
@@ -2274,6 +2277,8 @@ class Molecule(Graph):
         Returns :data:`True` if two graphs are identical and :data:`False` otherwise.
         """
         cython.declare(atomIndicies=set, otherIndices=set, atomList=list, otherList=list, mapping = dict)
+        warnings.warn("The Molecule.isIdentical method is no longer supported and may be removed in version 2.3."
+                      "Use Molecule.is_same(other, map_atom_ids=True) instead.", DeprecationWarning)
 
         if not isinstance(other, Molecule):
             raise TypeError('Got a {0} object for parameter "other", when a Molecule object is required.'.format(other.__class__))

@@ -48,6 +48,7 @@ import re
 import os.path
 from copy import copy, deepcopy
 import urllib
+import warnings
 
 import rmgpy.constants as constants
 from rmgpy.molecule.molecule import Molecule, Atom
@@ -498,6 +499,8 @@ class Reaction:
                         we know the reactants are identical, i.e. in generating
                         reactions.
         """
+        warnings.warn("The Reaction.isIsomorphic method is no longer supported and may be removed in version 2.3."
+                      "Use Reaction.is_same(other)` instead.", DeprecationWarning)
         if checkTemplateRxnProducts:
             try:
                 species1 = self.products if self.is_forward else self.reactants
