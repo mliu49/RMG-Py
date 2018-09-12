@@ -36,27 +36,29 @@ Both :class:`Atom` and :class:`Bond` objects store semantic information that
 describe the corresponding atom or bond.
 """
 
-import cython
+import itertools
 import logging
 import os
-import numpy
 import urllib
 from collections import OrderedDict
-import itertools
 from copy import deepcopy
 
-from .graph import Vertex, Edge, Graph, getVertexConnectivityValue
-import rmgpy.molecule.group as gr
-from rmgpy.molecule.pathfinder import find_shortest_path
-from .atomtype import AtomType, atomTypes, getAtomType, AtomTypeError
+import cython
+import numpy
+
 import rmgpy.constants as constants
 import rmgpy.molecule.element as elements
 import rmgpy.molecule.converter as converter
-import rmgpy.molecule.translator as translator
+import rmgpy.molecule.group as gr
 import rmgpy.molecule.resonance as resonance
-from .kekulize import kekulize
-from .adjlist import Saturator
+import rmgpy.molecule.translator as translator
+
 from rmgpy.exceptions import DependencyError
+from rmgpy.molecule.adjlist import Saturator
+from rmgpy.molecule.atomtype import AtomType, atomTypes, getAtomType, AtomTypeError
+from rmgpy.molecule.graph import Vertex, Edge, Graph, getVertexConnectivityValue
+from rmgpy.molecule.kekulize import kekulize
+from rmgpy.molecule.pathfinder import find_shortest_path
 
 ################################################################################
 
