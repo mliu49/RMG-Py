@@ -68,12 +68,12 @@ class PseudoSpecies(Species):
     def isIsomorphic(self, other, **kwargs):
         return self.label.lower() == other.label.lower()
 
-class TestReactionIsomorphism(unittest.TestCase):
+class TestReactionComparison(unittest.TestCase):
     """
-    Contains unit tests of the isomorphism testing of the  Reaction class.
+    Contains unit tests of the comparison testing of the Reaction class.
     """
 
-    def makeReaction(self,reaction_string):
+    def makeReaction(self, reaction_string):
         """"
         Make a Reaction (containing PseudoSpecies) of from a string like 'Ab=CD'
         """
@@ -81,43 +81,53 @@ class TestReactionIsomorphism(unittest.TestCase):
         reactants = [PseudoSpecies(i) for i in reactants]
         products = [PseudoSpecies(i) for i in products]
         return Reaction(reactants=reactants, products=products)
+
     def test1to1(self):
+        """Test that is_same works for one reactant and one product"""
         r1 = self.makeReaction('A=B')
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('a=B')))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('b=A')))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('B=a'),eitherDirection=False))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('A=C')))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('A=BB')))
+        self.assertTrue(r1.is_same(self.makeReaction('a=B')))
+        self.assertTrue(r1.is_same(self.makeReaction('b=A')))
+        self.assertFalse(r1.is_same(self.makeReaction('B=a'), either_direction=False))
+        self.assertFalse(r1.is_same(self.makeReaction('A=C')))
+        self.assertFalse(r1.is_same(self.makeReaction('A=BB')))
+
     def test1to2(self):
+        """Test that is_same works for one reactant and two products"""
         r1 = self.makeReaction('A=BC')
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('a=Bc')))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('cb=a')))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('a=cb'),eitherDirection=False))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('bc=a'),eitherDirection=False))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('a=c')))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('ab=c')))
+        self.assertTrue(r1.is_same(self.makeReaction('a=Bc')))
+        self.assertTrue(r1.is_same(self.makeReaction('cb=a')))
+        self.assertTrue(r1.is_same(self.makeReaction('a=cb'), either_direction=False))
+        self.assertFalse(r1.is_same(self.makeReaction('bc=a'), either_direction=False))
+        self.assertFalse(r1.is_same(self.makeReaction('a=c')))
+        self.assertFalse(r1.is_same(self.makeReaction('ab=c')))
+
     def test2to2(self):
+        """Test that is_same works for two reactants and two products"""
         r1 = self.makeReaction('AB=CD')
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('ab=cd')))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('ab=dc'),eitherDirection=False))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('dc=ba')))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('cd=ab'),eitherDirection=False))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('ab=ab')))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('ab=cde')))
+        self.assertTrue(r1.is_same(self.makeReaction('ab=cd')))
+        self.assertTrue(r1.is_same(self.makeReaction('ab=dc'), either_direction=False))
+        self.assertTrue(r1.is_same(self.makeReaction('dc=ba')))
+        self.assertFalse(r1.is_same(self.makeReaction('cd=ab'), either_direction=False))
+        self.assertFalse(r1.is_same(self.makeReaction('ab=ab')))
+        self.assertFalse(r1.is_same(self.makeReaction('ab=cde')))
+
     def test2to3(self):
+        """Test that is_same works for two reactant and three products"""
         r1 = self.makeReaction('AB=CDE')
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('ab=cde')))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('ba=edc'),eitherDirection=False))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('dec=ba')))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('cde=ab'),eitherDirection=False))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('ab=abc')))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('abe=cde')))
-    def test2to3_usingCheckOnlyLabel(self):
+        self.assertTrue(r1.is_same(self.makeReaction('ab=cde')))
+        self.assertTrue(r1.is_same(self.makeReaction('ba=edc'), either_direction=False))
+        self.assertTrue(r1.is_same(self.makeReaction('dec=ba')))
+        self.assertFalse(r1.is_same(self.makeReaction('cde=ab'), either_direction=False))
+        self.assertFalse(r1.is_same(self.makeReaction('ab=abc')))
+        self.assertFalse(r1.is_same(self.makeReaction('abe=cde')))
+
+    def test2to3_only_check_label(self):
+        """Test that is_same works with the only_check_label argument"""
         r1 = self.makeReaction('AB=CDE')
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('AB=CDE'),checkOnlyLabel=True))
-        self.assertTrue(r1.isIsomorphic(self.makeReaction('BA=EDC'),eitherDirection=False,checkOnlyLabel=True))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('Ab=CDE'),checkOnlyLabel=True))
-        self.assertFalse(r1.isIsomorphic(self.makeReaction('BA=EDd'),eitherDirection=False,checkOnlyLabel=True))
+        self.assertTrue(r1.is_same(self.makeReaction('AB=CDE'), only_check_label=True))
+        self.assertTrue(r1.is_same(self.makeReaction('BA=EDC'), either_direction=False, only_check_label=True))
+        self.assertFalse(r1.is_same(self.makeReaction('Ab=CDE'), only_check_label=True))
+        self.assertFalse(r1.is_same(self.makeReaction('BA=EDd'), either_direction=False, only_check_label=True))
 
 
 class TestReaction(unittest.TestCase):
