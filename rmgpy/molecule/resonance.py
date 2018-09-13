@@ -212,7 +212,7 @@ def generate_resonance_structures(mol, clar_structures=True, keep_isomorphic=Fal
                 # Append to structure list if unique
                 if not keep_isomorphic and mol.is_same(new_mol):
                     continue
-                elif keep_isomorphic and mol.isIdentical(new_mol):
+                elif keep_isomorphic and mol.is_same(new_mol, isomorphism=True, strict=True, map_atom_ids=True):
                     continue
                 else:
                     mol_list.append(new_mol)
@@ -259,10 +259,10 @@ def _generate_resonance_structures(mol_list, method_list, keep_isomorphic=False,
     Args:
         mol_list             starting list of molecules
         method_list          list of resonance structure algorithms
-        keep_isomorphic      if False, removes any structures that give isIsomorphic=True (default)
-                            if True, only remove structures that give isIdentical=True
-        copy                if False, append new resonance structures to input list (default)
-                            if True, make a new list with all of the resonance structures
+        keep_isomorphic      if False, removes any isomorphic structures (default)
+                             if True, only remove structures with matching atom IDs
+        copy                 if False, append new resonance structures to input list (default)
+                             if True, make a new list with all of the resonance structures
     """
     cython.declare(index=cython.int, molecule=Molecule, new_mol_list=list, new_mol=Molecule, mol=Molecule)
 
@@ -301,7 +301,7 @@ def _generate_resonance_structures(mol_list, method_list, keep_isomorphic=False,
             for mol in mol_list:
                 if not keep_isomorphic and mol.is_same(new_mol):
                     break
-                elif keep_isomorphic and mol.isIdentical(new_mol):
+                elif keep_isomorphic and mol.is_same(new_mol, isomorphism=True, strict=True, map_atom_ids=True):
                     break
             else:
                 mol_list.append(new_mol)

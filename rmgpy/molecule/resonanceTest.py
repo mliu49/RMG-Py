@@ -1033,7 +1033,7 @@ multiplicity 2
 
         self.assertEqual(len(out), 2)
         self.assertTrue(out[0].is_same(out[1]))
-        self.assertFalse(out[0].isIdentical(out[1]))
+        self.assertFalse(out[0].is_same(out[1], map_atom_ids=True))
 
     def testKeepIsomorphicStructuresFunctionsWhenFalse(self):
         """Test that keep_isomorphic works for resonance structure generation when False."""

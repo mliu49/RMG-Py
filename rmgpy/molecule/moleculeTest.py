@@ -2115,15 +2115,15 @@ multiplicity 2
         self.assertFalse(mol.isArylRadical())
 
     def testIdenticalTrue(self):
-        """Test that the isIdentical returns True with butane"""
+        """Test that is_same with map_atom_ids=True returns True with butane"""
         mol = Molecule(SMILES='CCCC')
         mol.assignAtomIDs()
         molCopy = mol.copy(deep=True)
         self.assertTrue(mol.is_same(molCopy))
-        self.assertTrue(mol.isIdentical(molCopy))
+        self.assertTrue(mol.is_same(molCopy, map_atom_ids=True))
 
     def testIdenticalFalse(self):
-        """Test that the isIdentical returns False with butane"""
+        """Test that is_same with map_atom_ids=True returns False with butane"""
         mol = Molecule(SMILES='CCCC')
         mol.assignAtomIDs()
         molCopy = mol.copy(deep=True)
@@ -2137,10 +2137,10 @@ multiplicity 2
         molCopy.removeAtom(b)
 
         self.assertTrue(mol.is_same(molCopy))
-        self.assertFalse(mol.isIdentical(molCopy))
+        self.assertFalse(mol.is_same(molCopy, map_atom_ids=True))
 
     def testIdenticalFalse2(self):
-        """Test that the isIdentical method returns False with ethene"""
+        """Test that is_same with map_atom_ids=True returns False with ethene"""
         # Manually test addition of H radical to ethene
         reactant1 = Molecule(SMILES='C=C')
         carbons = [atom for atom in reactant1.atoms if atom.symbol == 'C']
@@ -2166,7 +2166,7 @@ multiplicity 2
         labeledAtoms['*3'].decrementRadical()
 
         self.assertTrue(mol.is_same(molCopy))
-        self.assertFalse(mol.isIdentical(molCopy))
+        self.assertFalse(mol.is_same(molCopy, map_atom_ids=True))
 
     def testatomidvalid(self):
         """see if the atomIDVvalid method properly returns True"""
