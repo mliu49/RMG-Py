@@ -1302,7 +1302,7 @@ class Molecule(Graph):
 
         # Verify initial map if needed
         if initial_map is not None and verify_map:
-            result = self.isMappingValid(other, initial_map, equivalent=True)
+            result = self.isMappingValid(other, initial_map, equivalent=True, strict=strict)
 
         # If we're comparing atom IDs, verifying the map is sufficient
         # Otherwise, continue to the full isomorphism comparison

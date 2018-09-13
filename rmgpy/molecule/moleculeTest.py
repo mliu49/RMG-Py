@@ -2122,6 +2122,18 @@ multiplicity 2
         self.assertTrue(mol.is_same(molCopy))
         self.assertTrue(mol.is_same(molCopy, map_atom_ids=True))
 
+    def testIdenticalTrue2(self):
+        """Test that is_same with map_atom_ids=True returns True with allyl"""
+        mol = Molecule(SMILES='C=C[CH2]')
+        mol.assignAtomIDs()
+        res = mol.generate_resonance_structures(keep_isomorphic=True)
+        self.assertEqual(len(res), 2)
+
+        mol2 = res[1]
+        self.assertTrue(mol.is_same(mol2))
+        self.assertFalse(mol.is_same(mol2, map_atom_ids=True))
+        self.assertTrue(mol.is_same(mol2, strict=False, map_atom_ids=True))
+
     def testIdenticalFalse(self):
         """Test that is_same with map_atom_ids=True returns False with butane"""
         mol = Molecule(SMILES='CCCC')

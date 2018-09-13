@@ -154,6 +154,6 @@ cdef class Graph:
     
     cpdef list getLargestRing(self, Vertex vertex)
     
-    cpdef bint isMappingValid(self, Graph other, dict mapping, bint equivalent=?) except -2
+    cpdef bint isMappingValid(self, Graph other, dict mapping, bint equivalent=?, bint strict=?) except -2
 
     cpdef list get_edges_in_cycle(self, list vertices, bint sort=?)
