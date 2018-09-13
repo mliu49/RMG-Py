@@ -274,7 +274,6 @@ def find_degenerate_reactions(rxn_list, same_reactants=None, template=None, kine
     # with degenerate transition states
     sorted_rxns = []
     for rxn0 in selected_rxns:
-        # find resonance structures for rxn0
         rxn0.ensure_species()
         if len(sorted_rxns) == 0:
             # This is the first reaction, so create a new sublist
@@ -287,9 +286,9 @@ def find_degenerate_reactions(rxn_list, same_reactants=None, template=None, kine
                 identical = False
                 sameTemplate = True
                 for rxn in sub_list:
-                    isomorphic = rxn0.is_same(rxn, map_atom_ids=False, check_template_rxn_products=True)
+                    isomorphic = rxn0.is_same(rxn, strict=False, map_atom_ids=False, check_template_rxn_products=True)
                     if isomorphic:
-                        identical = rxn0.is_same(rxn, map_atom_ids=True, check_template_rxn_products=True)
+                        identical = rxn0.is_same(rxn, strict=False, map_atom_ids=True, check_template_rxn_products=True)
                         if identical:
                             # An exact copy of rxn0 is already in our list, so we can move on
                             break
