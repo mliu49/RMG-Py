@@ -99,7 +99,7 @@ def populate_resonance_algorithms(features=None):
             method_list.append(generate_aryne_resonance_structures)
         if features['hasNitrogenVal5']:
             method_list.append(generate_N5dc_radical_resonance_structures)
-        if features['hasLonePairs']:
+        if features['hasLonePairs'] and not features['isCarbene']:
             method_list.append(generate_adj_lone_pair_radical_resonance_structures)
             method_list.append(generate_adj_lone_pair_multiple_bond_resonance_structures)
             method_list.append(generate_adj_lone_pair_radical_multiple_bond_resonance_structures)
@@ -130,6 +130,7 @@ def analyze_molecule(mol):
                 'isArylRadical': False,
                 'hasNitrogenVal5': False,
                 'hasLonePairs': False,
+                'isCarbene': False,
                 }
 
     if features['isCyclic']:
@@ -145,6 +146,8 @@ def analyze_molecule(mol):
             features['hasNitrogenVal5'] = True
         if atom.lonePairs > 0:
             features['hasLonePairs'] = True
+            if atom.isCarbon():
+                features['isCarbene'] = True
 
     return features
 
