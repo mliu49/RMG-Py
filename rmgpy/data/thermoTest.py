@@ -284,7 +284,7 @@ multiplicity 2
 """)
         spec.generate_resonance_structures()
 
-        self.assertTrue(arom.isIsomorphic(spec.molecule[1]))  # The aromatic structure should be the second one
+        self.assertTrue(arom.isIsomorphic(spec.molecule[0]))  # The aromatic structure should be the second one
 
         initial = list(spec.molecule)  # Make a copy of the list
         thermo = self.database.getThermoData(spec)
@@ -1057,7 +1057,7 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         smiles = "C1=CC=C2C=CC=CC2=C1"
         spe = Species().fromSMILES(smiles)
         spe.generate_resonance_structures()
-        mol = spe.molecule[1]
+        mol = spe.molecule[0]
 
         # get two SSSRs
         SSSR = mol.getSmallestSetOfSmallestRings()
@@ -1304,14 +1304,14 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         smiles = 'C1=CC=C2CCCCC2=C1'
         spe = Species().fromSMILES(smiles)
         spe.generate_resonance_structures()
-        mol = spe.molecule[1]
+        mol = spe.molecule[0]
         ring_submol = convertRingToSubMolecule(mol.getDisparateRings()[1][0])[0]
 
         saturated_ring_submol, alreadySaturated = saturate_ring_bonds(ring_submol)
 
         expected_spe = Species().fromSMILES('C1=CC=C2CCCCC2=C1')
         expected_spe.generate_resonance_structures()
-        expected_saturated_ring_submol = expected_spe.molecule[1]
+        expected_saturated_ring_submol = expected_spe.molecule[0]
 
         expected_saturated_ring_submol.updateConnectivityValues()
 
@@ -1327,14 +1327,14 @@ class TestMolecularManipulationInvolvedInThermoEstimation(unittest.TestCase):
         smiles = 'C1=CC=C2CC=CCC2=C1'
         spe = Species().fromSMILES(smiles)
         spe.generate_resonance_structures()
-        mol = spe.molecule[1]
+        mol = spe.molecule[0]
         ring_submol = convertRingToSubMolecule(mol.getDisparateRings()[1][0])[0]
 
         saturated_ring_submol, alreadySaturated = saturate_ring_bonds(ring_submol)
 
         expected_spe = Species().fromSMILES('C1=CC=C2CCCCC2=C1')
         expected_spe.generate_resonance_structures()
-        expected_saturated_ring_submol = expected_spe.molecule[1]
+        expected_saturated_ring_submol = expected_spe.molecule[0]
         
         expected_saturated_ring_submol.updateConnectivityValues()
 
