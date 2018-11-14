@@ -86,7 +86,7 @@ class Network:
     def __init__(self, label='', isomers=None, reactants=None, products=None,
                  pathReactions=None, bathGas=None, netReactions=None, T=0.0, P =0.0,
                  Elist = None, Jlist = None, Ngrains = 0, NJ = 0, activeKRotor = True,
-                 activeJRotor = True, grainSize=0.0, grainCount = 0, E0 = None):
+                 activeJRotor = True, grainSize=0.0, grainCount = 0, E0 = None, Emax=None):
         """
         To initialize a Network object for running a pressure dependent job,
         only label, isomers, reactants, products pathReactions and bathGas are useful,
@@ -120,6 +120,7 @@ class Network:
         self.grainSize = grainSize
         self.grainCount = grainCount
         self.E0 = E0
+        self.Emax = Emax
 
         self.valid = False
 
@@ -419,7 +420,7 @@ class Network:
 
         return Elist
 
-    def selectEnergyGrains(self, T, grainSize=0.0, grainCount=0):
+    def selectEnergyGrains(self, T, grainSize=0.0, grainCount=0, factor=40.):
         """
         Select a suitable list of energies to use for subsequent calculations.
         This is done by finding the minimum and maximum energies on the 
@@ -442,19 +443,79 @@ class Network:
         Emin = numpy.min(self.E0)
         Emin = math.floor(Emin) # Round to nearest whole number
 
-        # Use the highest energy on the PES as the initial guess for Emax0
-        Emax = numpy.max(self.E0)
-        for rxn in self.pathReactions:
-            E0 = float(rxn.transitionState.conformer.E0.value_si)
-            if E0 > Emax: Emax = E0
-        
-        # Choose the actual Emax as many kB * T above the maximum energy on the PES
-        # You should check that this is high enough so that the Boltzmann distributions have trailed off to negligible values
-        Emax += 40. * constants.R * T
+        if self.Emax is None:
+            # Use the highest energy on the PES as the initial guess for Emax0
+            Emax = numpy.max(self.E0)
+            for rxn in self.pathReactions:
+                E0 = float(rxn.transitionState.conformer.E0.value_si)
+                if E0 > Emax: Emax = E0
+
+            # Choose the actual Emax as many kB * T above the maximum energy on the PES
+            # You should check that this is high enough so that the Boltzmann distributions have trailed off to negligible values
+            Emax += factor * constants.R * T
+        else:
+            Emax = self.Emax
 
         return self.__getEnergyGrains(Emin, Emax, grainSize, grainCount)
 
-    def calculateDensitiesOfStates(self):
+    def selectEmax(self, factor=None, tolerance=0.01):
+        """
+        Select a suitable value for Emax such that the tail of equilibrium
+        distribution has reached a sufficiently small value.
+
+        Args:
+            factor: initial guess for the Emax as a multiple of RT
+            tolerance: desired fraction of the peak value of the distribution
+
+        Returns None, sets self.Emax
+        """
+        from scipy.optimize import curve_fit, brentq
+
+        # TODO - Guess a factor based on molecule size
+        if factor is None:
+            factor = 10.
+
+        # Calculate density of states
+        Elist = self.calculateDensitiesOfStates(factor=factor)
+
+        # Get the equilibrium distribution for an isomer
+        eqDist = self.isomers[0].densStates * numpy.exp(-Elist / constants.R / self.Tmax)
+
+        # Scale Elist for easier fitting
+        Elist *= 1e-6
+
+        maxY = eqDist.max()
+        maxX = Elist[numpy.argmax(eqDist)]
+        print maxX, maxY, eqDist[-1]
+
+        # Check if the last point is past the peak of the distribution
+        if eqDist[-1] < maxY:
+            # Check if the last point is within the tolerance relative to the max
+            if eqDist[-1] / maxY > tolerance:
+                # Fit a curve to the distribution
+                popt, pcov = curve_fit(lambda x, a, b: a * x ** 2 * numpy.exp(b * x ** 2), Elist, eqDist, p0=[100, -10])
+                # Find the energy at which we reach the tolerance
+                target = maxY * tolerance
+                Emax = brentq(lambda x: target - popt[0] * x ** 2 * numpy.exp(popt[1] * x ** 2), maxX, 1)
+                # Adjust the factor to reach this energy
+                factor += 1e6 * (Emax - Elist[-1]) / constants.R / self.Tmax
+
+                print 'New factor = {0}'.format(factor)
+
+        else:
+            # Manually increment the factor for more accurate fitting
+            factor += 10
+            self.selectEmax(factor=factor)
+
+        # Recalculate density of states
+        Elist = self.calculateDensitiesOfStates(factor=factor)
+
+        # Update Emax
+        self.Emax = Emax
+
+        return Elist
+
+    def calculateDensitiesOfStates(self, factor=40.):
         """
         Calculate the densities of states of each configuration that has states
         data. The densities of states are computed such that they can be
@@ -474,11 +535,11 @@ class Network:
 
         # Choose the energies used to compute the densities of states
         # Use Tmin to select the minimum energy and grain size
-        Elist0 = self.selectEnergyGrains(Tmin, grainSize, grainCount)
+        Elist0 = self.selectEnergyGrains(Tmin, grainSize, grainCount, factor)
         Emin0 = numpy.min(Elist0)
         grainSize0 = Elist0[1] - Elist0[0]
         # Use Tmax to select the maximum energy and grain count
-        Elist0 = self.selectEnergyGrains(Tmax, grainSize, grainCount)
+        Elist0 = self.selectEnergyGrains(Tmax, grainSize, grainCount, factor)
         grainCount0 = len(Elist0)
         Emax0 = numpy.max(Elist0)
         
@@ -527,6 +588,8 @@ class Network:
 #            if self.products[n].densStates is not None:
 #                pylab.semilogy(Elist*0.001, self.products[n].densStates)
 #        pylab.show()
+
+        return Elist
 
     def mapDensitiesOfStates(self):
         """
