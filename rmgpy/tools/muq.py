@@ -476,8 +476,8 @@ class ReactorPCEFactory:
                             description = 'dln[{0}]/dln[{1}]'.format(outputSpecies.toChemkin(), descriptor)
 
                         print '{0:55} {1:10.3f} {2:10.3f}'.format(description,
-                                                                  mainSens[outputIndex][parameterIndex],
-                                                                  totalSens[outputIndex][parameterIndex])
+                                                                  100*mainSens[outputIndex][parameterIndex],
+                                                                  100*totalSens[outputIndex][parameterIndex])
             if reactorMod.gParams:
                 print ''
                 print 'Condition {} Thermo Sensitivities'.format(i + 1)
@@ -496,8 +496,8 @@ class ReactorPCEFactory:
                             description = 'dln[{0}]/dG[{1}]'.format(outputSpecies.toChemkin(), descriptor)
 
                         print '{0:35} {1:10.3f} {2:10.3f}'.format(description,
-                                                                  mainSens[outputIndex][parameterIndex],
-                                                                  totalSens[outputIndex][parameterIndex])
+                                                                  100*mainSens[outputIndex][parameterIndex],
+                                                                  100*totalSens[outputIndex][parameterIndex])
             print ''
 
         return mean, var, cov, mainSens, totalSens
