@@ -221,7 +221,8 @@ class ReactorModPiece(ModPiece):
             for j in range(self.numOutputSpecies):
                 speciesIndex = self.outputSpeciesIndices[j]                
                 speciesGenericData = allData[i][1][2:]                
-                output[i*self.numOutputSpecies+j]=speciesGenericData[speciesIndex].data[-1]
+                # Save output mole fraction in ln space
+                output[i*self.numOutputSpecies+j] = numpy.log(speciesGenericData[speciesIndex].data[-1])
                 
 #         print ''
 #         print 'Kinetics after'
