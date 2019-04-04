@@ -444,8 +444,8 @@ class TestCoreEdgeReactionModel(unittest.TestCase):
                                              products=[spcC, spcD],
                                              family='H_Abstraction',
                                              template=['Csd', 'H'])
-        reaction_in_model.reactants.sort()
-        reaction_in_model.products.sort()
+        reaction_in_model.reactants.sort(key=lambda x: x.index)
+        reaction_in_model.products.sort(key=lambda x: x.index)
 
         reaction_to_add = TemplateReaction(reactants=[spcA, spcB],
                                            products=[spcC, spcD],
@@ -485,8 +485,8 @@ class TestCoreEdgeReactionModel(unittest.TestCase):
                                              family='H_Abstraction',
                                              template=['Csd', 'H'],
                                              duplicate=True)
-        reaction_in_model.reactants.sort()
-        reaction_in_model.products.sort()
+        reaction_in_model.reactants.sort(key=lambda x: x.index)
+        reaction_in_model.products.sort(key=lambda x: x.index)
 
         reaction_to_add = TemplateReaction(reactants=[spcA, spcB],
                                            products=[spcC, spcD],
@@ -527,8 +527,8 @@ class TestCoreEdgeReactionModel(unittest.TestCase):
                                              family='H_Abstraction',
                                              template=['Csd', 'H'],
                                              duplicate=False)
-        reaction_in_model.reactants.sort()
-        reaction_in_model.products.sort()
+        reaction_in_model.reactants.sort(key=lambda x: x.index)
+        reaction_in_model.products.sort(key=lambda x: x.index)
 
         reaction_to_add = TemplateReaction(reactants=[spcA, spcB],
                                            products=[spcC, spcD],
@@ -582,8 +582,8 @@ class TestCoreEdgeReactionModel(unittest.TestCase):
                                                           family='H_Abstraction')
                                  )
 
-        rxn_f.reactants.sort()
-        rxn_f.products.sort()
+        rxn_f.reactants.sort(key=lambda x: x.index)
+        rxn_f.products.sort(key=lambda x: x.index)
 
         cerm.addReactionToCore(rxn_f)
         cerm.registerReaction(rxn_f)
