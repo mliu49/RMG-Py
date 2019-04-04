@@ -424,8 +424,8 @@ class CoreEdgeReactionModel:
         """
 
         # Make sure the reactant and product lists are sorted before performing the check
-        rxn.reactants.sort()
-        rxn.products.sort()
+        rxn.reactants.sort(key=lambda x: x.index)
+        rxn.products.sort(key=lambda x: x.index)
 
         # If reactants and products are identical, then something weird happened along
         # the way and we got a symmetrical reaction.
