@@ -1088,6 +1088,7 @@ class RMG(util.Subject):
                                 gParams=gParams,
                                 gUncertainty=uncertainty.thermoInputUncertainties,
                                 correlated=correlated,
+                                logx=self.uncertainty['logx'],
                             )
 
                             logging.info('Generating PCEs...')
