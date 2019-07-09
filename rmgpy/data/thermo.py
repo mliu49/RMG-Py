@@ -1700,6 +1700,9 @@ class ThermoDatabase(object):
         {'groupType':[List of tuples containing (Entry, Weight)]
         """
         comment = species.thermo.comment
+        # Remove new lines first
+        comment = ''.join(comment.split('\n'))
+        # Split into tokens by spaces
         tokens = comment.split()
         
         
