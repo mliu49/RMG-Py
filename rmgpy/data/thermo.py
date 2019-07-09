@@ -1743,6 +1743,16 @@ class ThermoDatabase(object):
                     splitTokens = re.split(regex, token)
                     groupLabel = splitTokens[1]
                     groupEntry = self.groups[groupType].entries[groupLabel]
+
+                    # Check if this group has any contribution (or is just a placeholder)
+                    isZero = (groupEntry.data.H298.value_si == 0 and
+                              groupEntry.data.S298.value_si == 0 and
+                              all(groupEntry.data.Cpdata.value_si == 0))
+
+                    if isZero:
+                        # Set weight to 0
+                        weight = 0
+
                     # Use dictionary to combine into weights when necessary
                     if not groupType in groups:
                         groups[groupType] = {groupEntry:weight}
