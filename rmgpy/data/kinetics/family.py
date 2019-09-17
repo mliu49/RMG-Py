@@ -1215,7 +1215,7 @@ class KineticsFamily(Database):
             if procnum > 1:
                 # If QMTP and multiprocessing write QMTP files here in parallel.
                 from rmgpy.rmg.input import get_input
-                quantum_mechanics = get_input('quantumMechanics')
+                quantum_mechanics = get_input('quantum_mechanics')
                 if quantum_mechanics:
                     quantum_mechanics.run_jobs(item.reactants + item.products, procnum=procnum)
 

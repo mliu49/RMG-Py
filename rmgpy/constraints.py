@@ -42,7 +42,7 @@ def fails_species_constraints(species):
     from rmgpy.rmg.input import get_input
 
     try:
-        species_constraints = get_input('speciesConstraints')
+        species_constraints = get_input('species_constraints')
     except Exception:
         logging.debug('Species constraints could not be found.')
         species_constraints = {}

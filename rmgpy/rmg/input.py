@@ -1184,13 +1184,13 @@ def get_input(name):
     global rmg
 
     if rmg:
-        if name == 'speciesConstraints':
+        if name == 'species_constraints':
             return rmg.species_constraints
-        elif name == 'quantumMechanics':
+        elif name == 'quantum_mechanics':
             return rmg.quantum_mechanics
-        elif name == 'MLEstimator':
+        elif name == 'ml_estimator':
             return rmg.ml_estimator, rmg.ml_settings
-        elif name == 'thermoCentralDatabase':
+        elif name == 'thermo_central_database':
             return rmg.thermo_central_database
         else:
             raise Exception('Unrecognized keyword: {}'.format(name))

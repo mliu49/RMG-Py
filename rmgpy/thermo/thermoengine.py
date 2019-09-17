@@ -142,7 +142,7 @@ def generate_thermo_data(spc, thermo_class=NASA, solvent_name=''):
     from rmgpy.rmg.input import get_input
 
     try:
-        thermo_central_database = get_input('thermoCentralDatabase')
+        thermo_central_database = get_input('thermo_central_database')
     except Exception:
         logging.debug('thermoCentralDatabase could not be found.')
         thermo_central_database = None
