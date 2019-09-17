@@ -570,8 +570,8 @@ class PDepNetwork(rmgpy.pdep.network.Network):
 
         reaction_model.update_unimolecular_reaction_networks()
 
-        if reaction_model.pressure_dependence.outputFile:
-            path = os.path.join(reaction_model.pressure_dependence.outputFile, 'pdep')
+        if reaction_model.pressure_dependence.output_file:
+            path = os.path.join(reaction_model.pressure_dependence.output_file, 'pdep')
 
             for name in os.listdir(path):  # remove the old reduced file
                 if name.endswith('reduced.py'):
@@ -722,7 +722,7 @@ class PDepNetwork(rmgpy.pdep.network.Network):
         # Get the parameters for the pressure dependence calculation
         job = pdep_settings
         job.network = self
-        output_directory = pdep_settings.outputFile
+        output_directory = pdep_settings.output_file
 
         Tmin = job.Tmin.value_si
         Tmax = job.Tmax.value_si

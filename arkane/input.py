@@ -323,7 +323,7 @@ def reaction(label, reactants, products, transitionState=None, kinetics=None, tu
                          'reactions from RMG families'.format(label))
             rxn = list(db.generate_reactions_from_families(reactants=rxn.reactants, products=rxn.products))
             model = CoreEdgeReactionModel()
-            model.verboseComments = True
+            model.verbose_comments = True
             for r in rxn:
                 model.apply_kinetics_to_reaction(r)
 

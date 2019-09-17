@@ -251,7 +251,7 @@ class KineticsJob(object):
             for n, T in enumerate(t_list):
                 k = ks[n]
                 k0 = k0s[n]
-                K_eq = keq_unit_converter * reaction.getEquilibriumConstant(T)  # returns SI units
+                K_eq = keq_unit_converter * reaction.get_equilibrium_constant(T)  # returns SI units
                 k0_rev = k0 / K_eq
                 k_rev = k / K_eq
                 k0_revs.append(k0_rev)

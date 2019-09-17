@@ -247,7 +247,7 @@ class RMG(util.Subject):
         if not self.output_directory:
             self.output_directory = os.path.dirname(path)
         if self.pressure_dependence:
-            self.pressure_dependence.outputFile = self.output_directory
+            self.pressure_dependence.output_file = self.output_directory
             self.reaction_model.pressure_dependence = self.pressure_dependence
         if self.solvent:
             self.reaction_model.solvent_name = self.solvent
@@ -345,12 +345,9 @@ class RMG(util.Subject):
 
     def save_input(self, path=None):
         """
-        Save an RMG job to the input file located at `path`, or
-        from the `outputFile` attribute if not given as a parameter.
+        Save an RMG job to the input file located at `path`.
         """
         from rmgpy.rmg.input import save_input_file
-        if path is None:
-            path = self.outputFile
         save_input_file(path, self)
 
     def load_database(self):

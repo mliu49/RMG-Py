@@ -94,9 +94,9 @@ class ExplorerJob(object):
 
         rmg = RMG()
 
-        rmg.speciesConstraints = {'allowed': ['input species', 'seed mechanisms', 'reaction libraries'],
-                                  'maximumRadicalElectrons': self.maximum_radical_electrons,
-                                  'explicitlyAllowedMolecules': []}
+        rmg.species_constraints = {'allowed': ['input species', 'seed mechanisms', 'reaction libraries'],
+                                   'maximumRadicalElectrons': self.maximum_radical_electrons,
+                                   'explicitlyAllowedMolecules': []}
 
         rmgpy.rmg.input.rmg = rmg
 
