@@ -84,6 +84,9 @@ from tqdm import tqdm
 
 # Global variables and functions
 GLOBALS1 = {
+    # Arkane
+    'jobList': 'job_list',
+    'transitionStateDict': 'transition_state_dict',
     # rmgpy.data.base
     'makeLogicNode': 'make_logic_node',
     'getAllCombinations': 'get_all_combinations',
@@ -341,6 +344,12 @@ GLOBALS2 = {
 
 # Class attributes
 ATTRIBUTES1 = {
+    # Arkane:
+    'angleUnits': 'angle_units',
+    'energyUnits': 'energy_units',
+    'cosineRotor': 'cosine_rotor',
+    'fourierRotor': 'fourier_rotor',
+    'rotorIndex': 'rotor_index',
     # rmgpy.data.thermo.ThermoDatabase
     'libraryOrder': 'library_order',
     'deltaAtomicAdsorptionEnergy': 'delta_atomic_adsorption_energy',
@@ -614,6 +623,28 @@ ATTRIBUTES2 = {
 
 # Class methods
 FUNCTIONS1 = {
+    # Arkane:
+    'loadInputFile': 'load_input_file',
+    'generateTemperatureList': 'generate_T_list',
+    'generatePressureList': 'generate_P_list',
+    'getNumberOfAtoms': 'get_number_of_atoms',
+    'loadForceConstantMatrix': 'load_force_constant_matrix',
+    'loadGeometry': 'load_geometry',
+    'loadConformer': 'load_conformer',
+    'loadEnergy': 'load_energy',
+    'loadZeroPointEnergy': 'load_zero_point_energy',
+    'loadScanEnergies': 'load_scan_energies',
+    'loadNegativeFrequency': 'load_negative_frequency',
+    'loadNecessaryDatabases': 'load_necessary_databases',
+    'getLibraries': 'get_libraries',
+    'visit_Call': 'visit_call',
+    'visit_List': 'visit_list',
+    'visit_Tuple': 'visit_tuple',
+    'visit_Dict': 'visit_dict',
+    'visit_Str': 'visit_str',
+    'visit_Num': 'visit_num',
+    'fitInterpolationModels': 'fit_interpolation_models',
+    'projectRotors': 'project_rotors',
     # rmgpy.data.base
     'getAllDescendants': 'get_all_descendants',
     'getEntriesToSave': 'get_entries_to_save',
@@ -1319,6 +1350,12 @@ FUNCTIONS2 = {
 
 # Function and method arguments
 ARGUMENTS1 = {
+    # Arekane:
+    'Vlist': 'v_list',
+    'maximumRadicalElectrons': 'maximum_radical_electrons',
+    'format': 'file_format',
+    'F': 'hessian',
+    'getProjectedOutFreqs': 'get_projected_out_freqs',
     # rmgpy.data.base
     'numLabels': 'num_labels',
     # rmgpy.data.statmech
@@ -1692,7 +1729,7 @@ ARGUMENTS2 = {
     'terminationTime': 'termination_time',
 }
 
-DANGEROUS = ['SMILES', 'InChI', 'R', 'Run', 'atomTypes']
+DANGEROUS = ['SMILES', 'InChI', 'R', 'Run', 'atomTypes', 'format', 'F']
 
 
 def main(path, write=False, nobackups=False):
