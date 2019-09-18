@@ -419,7 +419,7 @@ class KineticsDrawer(object):
         self.surface = None
         self.cr = None
 
-    def __get_energy_range(self):
+    def _get_energy_range(self):
         """
         Return the minimum and maximum energy in J/mol on the potential energy surface.
         """
@@ -434,7 +434,7 @@ class KineticsDrawer(object):
                                              self.reaction.transition_state.conformer.E0.value_si / 1000.))
         return e0_min, e0_max
 
-    def __use_structure_for_label(self, configuration):
+    def _use_structure_for_label(self, configuration):
         """
         Return ``True`` if the configuration should use molecular structures
         for its labels or ``False`` otherwise.
@@ -452,7 +452,7 @@ class KineticsDrawer(object):
 
         return use_structures
 
-    def __get_text_size(self, text, padding=2, file_format='pdf'):
+    def _get_text_size(self, text, padding=2, file_format='pdf'):
         try:
             import cairocffi as cairo
         except ImportError:
@@ -467,7 +467,7 @@ class KineticsDrawer(object):
         height = extents[3] + 2 * padding
         return [0, 0, width, height]
 
-    def __draw_text(self, text, cr, x0, y0, padding=2):
+    def _draw_text(self, text, cr, x0, y0, padding=2):
         cr.save()
         cr.set_font_size(self.options['fontSizeNormal'])
         extents = cr.text_extents(text)
@@ -479,19 +479,19 @@ class KineticsDrawer(object):
         height = extents[3] + 2 * padding
         return [0, 0, width, height]
 
-    def __get_label_size(self, configuration, file_format='pdf'):
+    def _get_label_size(self, configuration, file_format='pdf'):
         width = 0
         height = 0
         bounding_rects = []
-        if self.__use_structure_for_label(configuration):
+        if self._use_structure_for_label(configuration):
             for spec in configuration.species_list:
                 rect = MoleculeDrawer().draw(spec.molecule[0], file_format=file_format)[2]
                 bounding_rects.append(list(rect))
         else:
             for spec in configuration.species_list:
-                bounding_rects.append(self.__get_text_size(spec.label, file_format=file_format))
+                bounding_rects.append(self._get_text_size(spec.label, file_format=file_format))
 
-        plus_rect = self.__get_text_size('+', file_format=file_format)
+        plus_rect = self._get_text_size('+', file_format=file_format)
 
         for rect in bounding_rects:
             if width < rect[2]:
@@ -501,18 +501,18 @@ class KineticsDrawer(object):
 
         return [0, 0, width, height]
 
-    def __draw_label(self, configuration, cr, x0, y0, file_format='pdf'):
+    def _draw_label(self, configuration, cr, x0, y0, file_format='pdf'):
 
-        bounding_rect = self.__get_label_size(configuration, file_format=file_format)
+        bounding_rect = self._get_label_size(configuration, file_format=file_format)
         padding = 2
 
-        use_structures = self.__use_structure_for_label(configuration)
+        use_structures = self._use_structure_for_label(configuration)
         y = y0
         for i, spec in enumerate(configuration.species_list):
             if i > 0:
-                rect = self.__get_text_size('+', padding=padding, file_format=file_format)
+                rect = self._get_text_size('+', padding=padding, file_format=file_format)
                 x = x0 - 0.5 * (rect[2] - bounding_rect[2]) + 2 * padding
-                self.__draw_text('+', cr, x, y)
+                self._draw_text('+', cr, x, y)
                 y += rect[3]
 
             if use_structures:
@@ -526,9 +526,9 @@ class KineticsDrawer(object):
                 cr.restore()
                 y += rect[3]
             else:
-                rect = self.__get_text_size(spec.label, padding=padding, file_format=file_format)
+                rect = self._get_text_size(spec.label, padding=padding, file_format=file_format)
                 x = x0 - 0.5 * (rect[2] - bounding_rect[2]) + 2 * padding
-                self.__draw_text(spec.label, cr, x, y)
+                self._draw_text(spec.label, cr, x, y)
                 y += rect[3]
 
         return bounding_rect
@@ -554,10 +554,10 @@ class KineticsDrawer(object):
         # Generate the bounding rectangles for each configuration label
         label_rects = []
         for well in self.wells:
-            label_rects.append(self.__get_label_size(well, file_format=file_format))
+            label_rects.append(self._get_label_size(well, file_format=file_format))
 
         # Get energy range (use kJ/mol internally)
-        e0_min, e0_max = self.__get_energy_range()
+        e0_min, e0_max = self._get_energy_range()
         e0_min *= 0.001
         e0_max *= 0.001
 
@@ -579,7 +579,7 @@ class KineticsDrawer(object):
             raise InputError('Invalid value "{0}" for Eunits parameter.'.format(e_units))
 
         # Determine height required for drawing
-        e_height = self.__get_text_size('0.0', file_format=file_format)[3] + 6
+        e_height = self._get_text_size('0.0', file_format=file_format)[3] + 6
         y_e0 = (e0_max - 0.0) * e_slope + padding + e_height
         height = (e0_max - e0_min) * e_slope + 2 * padding + e_height + 6
         for i in range(len(self.wells)):
@@ -684,7 +684,7 @@ class KineticsDrawer(object):
         # Fill the background with white
         cr.set_source_rgba(1.0, 1.0, 1.0, 1.0)
         cr.paint()
-        self.__draw_text('E0 ({0})'.format(e_units), cr, 15, 10, padding=2)  # write units
+        self._draw_text('E0 ({0})'.format(e_units), cr, 15, 10, padding=2)  # write units
 
         # Draw reactions
         e0_reac = self.wells[0].E0 * 0.001 - e0_offset
@@ -771,7 +771,7 @@ class KineticsDrawer(object):
             cr.rectangle(x, y, label_rects[i][2], label_rects[i][3])
             cr.set_source_rgba(1.0, 1.0, 1.0, 0.75)
             cr.fill()
-            self.__draw_label(well, cr, x, y, file_format=file_format)
+            self._draw_label(well, cr, x, y, file_format=file_format)
 
         # Finish Cairo drawing
         if file_format == 'png':

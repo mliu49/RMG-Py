@@ -70,7 +70,7 @@ from arkane.statmech import StatMechJob, assign_frequency_scale_factor
 from arkane.thermo import ThermoJob
 
 
-species_dict, transition_state_dict, reaction_dict, networkDict = dict(), dict(), dict(), dict()
+species_dict, transition_state_dict, reaction_dict, network_dict = dict(), dict(), dict(), dict()
 job_list = list()
 
 
@@ -339,7 +339,7 @@ def reaction(label, reactants, products, transitionState=None, kinetics=None, tu
 
 def network(label, isomers=None, reactants=None, products=None, pathReactions=None, bathGas=None):
     """Load a network from an input file"""
-    global networkDict, species_dict, reaction_dict
+    global network_dict, species_dict, reaction_dict
     logging.info('Loading network {0}...'.format(label))
     isomers0 = isomers or []
     isomers = []
@@ -423,7 +423,7 @@ def network(label, isomers=None, reactants=None, products=None, pathReactions=No
         path_reactions=path_reactions,
         bath_gas=bath_gas,
     )
-    networkDict[label] = network
+    network_dict[label] = network
 
 
 def kinetics(label, Tmin=None, Tmax=None, Tlist=None, Tcount=0, sensitivity_conditions=None):
@@ -466,14 +466,14 @@ def pressureDependence(label, Tmin=None, Tmax=None, Tcount=0, Tlist=None, Pmin=N
                        maximumGrainSize=None, minimumGrainCount=0, method=None, interpolationModel=None,
                        activeKRotor=True, activeJRotor=True, rmgmode=False, sensitivity_conditions=None):
     """Generate a pressure dependent job"""
-    global job_list, networkDict
+    global job_list, network_dict
 
     if isinstance(interpolationModel, str):
         interpolationModel = (interpolationModel,)
 
     nwk = None
-    if label in list(networkDict.keys()):
-        nwk = networkDict[label]
+    if label in list(network_dict.keys()):
+        nwk = network_dict[label]
 
     job = PressureDependenceJob(network=nwk, Tmin=Tmin, Tmax=Tmax, Tcount=Tcount, Tlist=Tlist,
                                 Pmin=Pmin, Pmax=Pmax, Pcount=Pcount, Plist=Plist,
@@ -548,13 +548,10 @@ def load_input_file(path):
     Load the Arkane input file located at `path` on disk, and return a list of
     the jobs defined in that file.
     """
-    global species_dict, transition_state_dict, reaction_dict, networkDict, job_list
+    global species_dict, transition_state_dict, reaction_dict, network_dict, job_list
 
     # Clear module-level variables
-    species_dict = {}
-    transition_state_dict = {}
-    reaction_dict = {}
-    networkDict = {}
+    species_dict, transition_state_dict, reaction_dict, network_dict = dict(), dict(), dict(), dict()
     job_list = []
 
     global_context = {'__builtins__': None}
@@ -649,7 +646,7 @@ def load_input_file(path):
             if atom_energies is not None:
                 job.arkane_species.atom_energies = atom_energies
 
-    return job_list, reaction_dict, species_dict, transition_state_dict, networkDict
+    return job_list, reaction_dict, species_dict, transition_state_dict, network_dict
 
 
 def process_model_chemistry(model_chemistry):
