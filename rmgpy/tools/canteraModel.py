@@ -350,14 +350,14 @@ class Cantera(object):
             # In RMG, any species with an index of -1 is an inert and should not be plotted
             inert_list = [species for species in self.species_list if species.index == -1]
 
-            t_data = data_list[0]
-            p_data = data_list[1]
+            T_data = data_list[0]
+            P_data = data_list[1]
             species_data = [data for data in data_list if data.species not in inert_list]
 
             # plot
-            GenericPlot(x_var=time, y_var=t_data).plot(
+            GenericPlot(x_var=time, y_var=T_data).plot(
                 os.path.join(self.output_directory, '{0}_temperature.png'.format(i + 1)))
-            GenericPlot(x_var=time, y_var=p_data).plot(
+            GenericPlot(x_var=time, y_var=P_data).plot(
                 os.path.join(self.output_directory, '{0}_pressure.png'.format(i + 1)))
             SimulationPlot(x_var=time, y_var=species_data, num_species=top_species, ylabel='Mole Fraction').plot(
                 os.path.join(self.output_directory, '{0}_mole_fractions.png'.format(i + 1)))
