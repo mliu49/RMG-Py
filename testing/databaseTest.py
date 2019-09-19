@@ -1158,11 +1158,11 @@ Origin Group AdjList:
         tst = []
         for node_name, node_group in group.entries.items():
             del entries_copy[node_name]
-            for nodeNameOther, nodeGroupOther in entries_copy.items():
-                group.match_node_to_node(node_group, nodeGroupOther)
-                tst.append((group.match_node_to_node(node_group, nodeGroupOther),
-                            "Node {node} in {group} group was found to be identical to node {nodeOther}".format(
-                                node=node_name, group=group_name, node_other=nodeNameOther)))
+            for node_name_other, node_group_other in entries_copy.items():
+                group.match_node_to_node(node_group, node_group_other)
+                tst.append((group.match_node_to_node(node_group, node_group_other),
+                            "Node {node} in {group} group was found to be identical to node {node_other}".format(
+                                node=node_name, group=group_name, node_other=node_name_other)))
 
         boo = False
         for i in range(len(tst)):
