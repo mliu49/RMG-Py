@@ -161,7 +161,7 @@ def main():
             'RMG': RMG
         }
 
-        command = """rmg = RMG(inputFile=inputFile, outputDirectory=output_dir); rmg.execute(**kwargs)"""
+        command = """rmg = RMG(input_file=inputFile, output_directory=output_dir); rmg.execute(**kwargs)"""
 
         stats_file = os.path.join(args.output_directory, 'RMG.profile')
         print("Running under cProfile")
@@ -175,7 +175,7 @@ def main():
 
     else:
 
-        rmg = RMG(inputFile=args.file, outputDirectory=args.output_directory)
+        rmg = RMG(input_file=args.file, output_directory=args.output_directory)
         rmg.execute(**kwargs)
 
 
