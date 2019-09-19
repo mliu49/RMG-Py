@@ -664,6 +664,8 @@ FUNCTIONS1 = {
     'visit_Num': 'visit_num',
     'fitInterpolationModels': 'fit_interpolation_models',
     'projectRotors': 'project_rotors',
+    # rmgpy.__init__
+    'getPath': 'get_path',
     # rmgpy.data.base
     'getAllDescendants': 'get_all_descendants',
     'getEntriesToSave': 'get_entries_to_save',
@@ -1027,6 +1029,7 @@ FUNCTIONS1 = {
     'logHeader': 'log_header',
     'loadRMGJavaInput': 'load_rmg_java_input',
     'readMeaningfulLineJava': 'read_meaningful_line_java',
+    'determine_procnum_from_RAM': 'determine_procnum_from_ram',
     # rmgpy.rmg.model
     'checkForExistingSpecies': 'check_for_existing_species',
     'makeNewSpecies': 'make_new_species',
@@ -1107,6 +1110,7 @@ FUNCTIONS1 = {
     # rmgpy.thermo.thermodata
     'toNASA': 'to_nasa',
     # rmgpy.reaction
+    'toLabeledStr': 'to_labeled_str',
     'isIsomerization': 'is_isomerization',
     'isAssociation': 'is_association',
     'isDissociation': 'is_dissociation',
