@@ -1323,11 +1323,11 @@ def save_output(rmg):
     Save the current reaction model to a pretty HTML file.
     """
     logging.info('Saving current model core to HTML file...')
-    save_output_html(os.path.join(rmg.outputDirectory, 'output.html'), rmg.reaction_model, 'core')
+    save_output_html(os.path.join(rmg.output_directory, 'output.html'), rmg.reaction_model, 'core')
 
     if rmg.save_edge_species:
         logging.info('Saving current model edge to HTML file...')
-        save_output_html(os.path.join(rmg.outputDirectory, 'output_edge.html'), rmg.reaction_model, 'edge')
+        save_output_html(os.path.join(rmg.output_directory, 'output_edge.html'), rmg.reaction_model, 'edge')
 
 
 class OutputHTMLWriter(object):
@@ -1339,7 +1339,7 @@ class OutputHTMLWriter(object):
     A new instance of the class can be appended to a subject as follows:
     
     rmg = ...
-    listener = OutputHTMLWriter(outputDirectory)
+    listener = OutputHTMLWriter(output_directory)
     rmg.attach(listener)
 
     Whenever the subject calls the .notify() method, the
