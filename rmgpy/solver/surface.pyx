@@ -55,8 +55,8 @@ cdef class SurfaceReactor(ReactionSystem):
     cdef public double V
     cdef public bint constant_volume
 
-    cdef public list T_range
-    cdef public list P_range
+    cdef public list Trange
+    cdef public list Prange
     cdef public int n_sims
     cdef public dict sens_conditions
 
@@ -86,7 +86,7 @@ cdef class SurfaceReactor(ReactionSystem):
                                 sensitivity_threshold)
 
         if isinstance(T, list):
-            self.T_range = [Quantity(t) for t in T]
+            self.Trange = [Quantity(t) for t in T]
         else:
             self.T = Quantity(T)
         if isinstance(P_initial, list):

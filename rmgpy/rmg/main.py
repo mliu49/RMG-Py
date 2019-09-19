@@ -287,14 +287,14 @@ class RMG(util.Subject):
                     assert (reaction_system.T.value_si < self.pressure_dependence.Tmax.value_si), "Reaction system T is above pressure_dependence range."
                     assert (reaction_system.T.value_si > self.pressure_dependence.Tmin.value_si), "Reaction system T is below pressure_dependence range."
                 else:
-                    assert (reaction_system.T_range[1].value_si < self.pressure_dependence.Tmax.value_si), "Reaction system T is above pressure_dependence range."
-                    assert (reaction_system.T_range[0].value_si > self.pressure_dependence.Tmin.value_si), "Reaction system T is below pressure_dependence range."
+                    assert (reaction_system.Trange[1].value_si < self.pressure_dependence.Tmax.value_si), "Reaction system T is above pressure_dependence range."
+                    assert (reaction_system.Trange[0].value_si > self.pressure_dependence.Tmin.value_si), "Reaction system T is below pressure_dependence range."
                 if reaction_system.P:
                     assert (reaction_system.P.value_si < self.pressure_dependence.Pmax.value_si), "Reaction system P is above pressure_dependence range."
                     assert (reaction_system.P.value_si > self.pressure_dependence.Pmin.value_si), "Reaction system P is below pressure_dependence range."
                 else:
-                    assert (reaction_system.P_range[1].value_si < self.pressure_dependence.Pmax.value_si), "Reaction system P is above pressure_dependence range."
-                    assert (reaction_system.P_range[0].value_si > self.pressure_dependence.Pmin.value_si), "Reaction system P is below pressure_dependence range."
+                    assert (reaction_system.Prange[1].value_si < self.pressure_dependence.Pmax.value_si), "Reaction system P is above pressure_dependence range."
+                    assert (reaction_system.Prange[0].value_si > self.pressure_dependence.Pmin.value_si), "Reaction system P is below pressure_dependence range."
 
             assert any([not s.reactive for s in reaction_system.initial_mole_fractions.keys()]), \
                 "Pressure Dependence calculations require at least one inert (nonreacting) species for the bath gas."
@@ -656,11 +656,11 @@ class RMG(util.Subject):
         self.done = False
 
         # determine min and max values for T and P (don't determine P values for liquid reactors)
-        self.Tmin = min([x.T_range[0].value_si if x.T_range else x.T.value_si for x in self.reaction_systems])
-        self.Tmax = max([x.T_range[1].value_si if x.T_range else x.T.value_si for x in self.reaction_systems])
+        self.Tmin = min([x.Trange[0].value_si if x.Trange else x.T.value_si for x in self.reaction_systems])
+        self.Tmax = max([x.Trange[1].value_si if x.Trange else x.T.value_si for x in self.reaction_systems])
         try:
-            self.Pmin = min([x.P_range[0].value_si if x.P_range else x.P.value_si for x in self.reaction_systems])
-            self.Pmax = max([x.P_range[1].value_si if x.P_range else x.P.value_si for x in self.reaction_systems])
+            self.Pmin = min([x.Prange[0].value_si if x.Prange else x.P.value_si for x in self.reaction_systems])
+            self.Pmax = max([x.Prange[1].value_si if x.Prange else x.P.value_si for x in self.reaction_systems])
         except AttributeError:
             # For LiquidReactor, Pmin and Pmax remain with the default value of `None`
             pass
@@ -2078,12 +2078,12 @@ class RMG_Memory(object):
     def __init__(self, reaction_system, bspc):
         self.Ranges = dict()
 
-        if hasattr(reaction_system, 'T_range') and isinstance(reaction_system.T_range, list):
-            T_range = reaction_system.T_range
-            self.Ranges['T'] = [T.value_si for T in T_range]
-        if hasattr(reaction_system, 'P_range') and isinstance(reaction_system.P_range, list):
-            P_range = reaction_system.P_range
-            self.Ranges['P'] = [np.log(P.value_si) for P in P_range]
+        if hasattr(reaction_system, 'Trange') and isinstance(reaction_system.Trange, list):
+            Trange = reaction_system.Trange
+            self.Ranges['T'] = [T.value_si for T in Trange]
+        if hasattr(reaction_system, 'Prange') and isinstance(reaction_system.Prange, list):
+            Prange = reaction_system.Prange
+            self.Ranges['P'] = [np.log(P.value_si) for P in Prange]
         if hasattr(reaction_system, 'initial_mole_fractions'):
             if bspc:
                 self.initial_mole_fractions = deepcopy(reaction_system.initial_mole_fractions)
