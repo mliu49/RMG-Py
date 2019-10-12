@@ -102,7 +102,7 @@ def calculateMicrocanonicalRateCoefficient(reaction,
         
         # We've been provided with molecular degree of freedom data for the
         # transition state, so let's use the more accurate RRKM theory
-        logging.debug('Calculating microcanonical rate coefficient using RRKM theory for {0}...'.format(reaction))
+        logging.debug('Calculating microcanonical rate coefficient using RRKM theory for %s...', reaction)
         if reactantStatesKnown and (reaction.isIsomerization() or reaction.isDissociation()):
             kf = applyRRKMTheory(reaction.transitionState, Elist, Jlist, reacDensStates)
             kf *= C0inv**(len(reaction.reactants) - 1)
@@ -117,7 +117,7 @@ def calculateMicrocanonicalRateCoefficient(reaction,
     elif reaction.kinetics is not None:
         # We've been provided with high-pressure-limit rate coefficient data,
         # so let's use the less accurate inverse Laplace transform method
-        logging.debug('Calculating microcanonical rate coefficient using ILT method for {0}...'.format(reaction))
+        logging.debug('Calculating microcanonical rate coefficient using ILT method for %s...', reaction)
         if reactantStatesKnown:
             kinetics = reaction.kinetics if reaction.network_kinetics is None else reaction.network_kinetics
             kf = applyInverseLaplaceTransformMethod(reaction.transitionState, kinetics, Elist, Jlist, reacDensStates, T)
@@ -159,14 +159,14 @@ def calculateMicrocanonicalRateCoefficient(reaction,
     elif not forward and reactantStatesKnown:
         # We computed the reverse rate coefficient above
         # Thus we need to compute the forward rate coefficient here
-        kf = numpy.zeros_like(kr)        
+        kf = numpy.zeros_like(kr)
         for s in range(NJ):
             for r in range(Ngrains):
                 if reacDensStates[r,s] != 0:
                     kf[r,s] = kr[r,s] * prodDensStates[r,s] / reacDensStates[r,s]
         kf *= C0inv**(len(reaction.reactants) - len(reaction.products))
-    logging.debug('Finished finding microcanonical rate coefficients for path reaction {}'.format(reaction))
-    logging.debug('The forward and reverse rates are found to be  {0} and {1} respectively.'.format(kf, kr))
+    logging.debug('Finished finding microcanonical rate coefficients for path reaction %s', reaction)
+    logging.debug('The forward and reverse rates are found to be %g and %g respectively.', kf, kr)
      
     return kf, kr
 
@@ -227,8 +227,8 @@ def applyRRKMTheory(transitionState,
         for r in range(Ngrains):
             if sumStates[r,s] > 0 and densStates[r,s] > 0:
                 k[r,s] = sumStates[r,s] / densStates[r,s] * dE
-    logging.debug('Finished applying RRKM for path transition state {}'.format(transitionState))
-    logging.debug('The rate constant is found to be {}'.format(k))
+    logging.debug('Finished applying RRKM for path transition state %s', transitionState)
+    logging.debug('The rate constant is found to be %s', k)
 
     return k
 
@@ -325,9 +325,9 @@ def applyInverseLaplaceTransformMethod(transitionState,
                             
     else:
         raise PressureDependenceError('Unable to use inverse Laplace transform method for non-Arrhenius kinetics or for n < 0.')
-    logging.debug('Finished applying inverse lapace transform for path transition state {}'.format(transitionState))
-    logging.debug('The rate constant is found to be {}'.format(k))
-    
+    logging.debug('Finished applying inverse lapace transform for path transition state %s', transitionState)
+    logging.debug('The rate constant is found to be %s', k)
+
     return k
 
 def fitInterpolationModel(reaction, Tlist, Plist, K, model, Tmin, Tmax, Pmin, Pmax, errorCheck=False):
@@ -391,8 +391,8 @@ def fitInterpolationModel(reaction, Tlist, Plist, K, model, Tmin, Tmax, Pmin, Pm
                 logRMS += (logkmodel - logkdata) * (logkmodel - logkdata)
         logRMS = sqrt(logRMS / len(Tlist) / len(Plist))
         if logRMS > 0.5:
-            logging.warning('RMS error for k(T,P) fit = {0:g} for reaction {1}.'.format(logRMS, reaction))
-    logging.debug('Finished fitting model for path reaction {}'.format(reaction))
-    logging.debug('The kinetics fit is {0!r}'.format(kinetics))
+            logging.warning('RMS error for k(T,P) fit = %g for reaction %s.', logRMS, reaction)
+    logging.debug('Finished fitting model for path reaction %s', reaction)
+    logging.debug('The kinetics fit is %r', kinetics)
     return kinetics
 
